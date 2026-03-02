@@ -1457,6 +1457,146 @@
 
     #auth-error { color: #b42318; font-weight: 700; min-height: 1.2em; }
 
+
+
+    /* ===== Responsive Improvements ===== */
+    @media (max-width: 1024px) {
+      .wrap { padding: .85rem .85rem; }
+      .top { gap: .6rem; }
+      .top-datetime { font-size: 15px; padding: .35rem .55rem; }
+      .top-actions .btn { width: 118px; height: 46px; min-height: 46px; font-size: 15px; }
+      .badge.flex { min-width: 0; }
+    }
+
+    @media (max-width: 820px) {
+      .top {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .brand {
+        order: 1;
+        margin-left: 0;
+        width: 100%;
+      }
+      .top-datetime {
+        order: 2;
+        width: 100%;
+        text-align: center;
+      }
+      .top-actions {
+        order: 3;
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .top-actions .btn {
+        flex: 1 1 140px;
+        max-width: 180px;
+      }
+      #source-panel .field-narrow > .row {
+        flex-wrap: wrap;
+      }
+      #source-panel .source-top-actions .btn {
+        width: 100%;
+      }
+      #source-panel .source-top-actions .field {
+        grid-template-rows: auto auto auto;
+      }
+      .timer {
+        grid-template-columns: 1fr;
+        top: 0;
+      }
+      .timer-display {
+        flex-wrap: wrap;
+        gap: .4rem .8rem;
+      }
+      .timer-display .time {
+        min-width: 0;
+        text-align: left;
+      }
+      .btn-fs {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body { font-size: 14px; }
+      .panel { padding: .75rem; border-radius: 14px; }
+      #source-panel, #filters-panel { border-radius: 14px; }
+      .hero { margin: .45rem 0 .7rem; padding: 0; }
+      .hero-badge { font-size: clamp(1.55rem, 8.2vw, 2.2rem); }
+      #hero-json-name { font-size: .95rem !important; }
+      .field input[type="number"],
+      select,
+      input[type="text"],
+      textarea { font-size: 16px; }
+      .btn,
+      .btn-lg,
+      #btn-go.btn-lg {
+        width: 100%;
+        min-width: 0;
+      }
+      .badge {
+        max-width: 100%;
+      }
+      .badge.flex {
+        min-width: 0;
+      }
+      .profiles {
+        gap: .5rem;
+      }
+      .chapters-wrap {
+        max-height: 46vh;
+      }
+      .chapters {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+      }
+      .chapters label {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      #status {
+        font-size: 13px;
+      }
+      #status-text {
+        word-break: break-word;
+      }
+      #results-modal .modal-card,
+      #choice-modal .modal-card,
+      #profile-modal .modal-card,
+      #easter-modal .modal-card,
+      #help-modal .modal-card,
+      #ai-modal .modal-card,
+      #auth-modal .modal-card {
+        width: 96vw;
+        max-height: 88vh;
+        overflow: auto;
+        padding: .85rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      #source-panel .field-narrow > .row {
+        flex-direction: column;
+        align-items: stretch !important;
+      }
+      #source-panel .field-wide textarea {
+        min-height: 150px;
+      }
+      .timer-display {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      .timer-display .elapsed,
+      .timer-display .answered,
+      .timer-display .time {
+        font-size: 15px;
+        line-height: 1.25;
+      }
+    }
+
   </style>
 </head>
 

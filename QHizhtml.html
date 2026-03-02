@@ -2,7 +2,7 @@
 <html lang="it"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>qhizhtml</title>
+  <title>QuizGit</title>
   <style>
     :root {
       --bg: #f7f4ed;
@@ -1428,7 +1428,7 @@
         <div id="top-datetime" class="top-datetime">23/02/2026, 06:29:43</div>
         <div class="brand">
           <div class="logo">Q</div>
-          <h1>qhizhtml</h1>
+          <h1>QuizGit</h1>
         </div>
         <div class="top-actions">
           <button id="btn-help" class="btn btn-ghost" type="button">Help</button>
@@ -1687,7 +1687,7 @@
     <footer>
       <div id="status" class="status" style="margin-top:.6rem">
         <span class="pill">Stato</span>
-        <span id="status-text">Carica un JSON, verifica filtri, poi premi “Procedi”.</span>
+        <span id="status-text">Scegli un JSON da GitHub, verifica filtri, poi premi “Procedi”.</span>
       </div>
     </footer>
   </main>
@@ -1707,6 +1707,23 @@
     let currentJsonName = 'JSON';
     let currentJsonSource = { type: 'none' }; // none | file | url | paste
     let currentPdfObjectUrl = null;
+    const QUIZ_GIT_MODE = true;
+    const QUIZ_GIT_BASE = (() => {
+      try {
+        const fromStorage = String(localStorage.getItem('quizgit_remote_json_base') || '').trim();
+        if (fromStorage) return fromStorage.replace(/\/+$/, '');
+      } catch { }
+      try {
+        return new URL('./files/JSON', window.location.href).href.replace(/\/+$/, '');
+      } catch {
+        return '/files/JSON';
+      }
+    })();
+    const QUIZ_GIT_MANIFEST_CANDIDATES = [
+      `${QUIZ_GIT_BASE}/manifest_full.json`,
+      `${QUIZ_GIT_BASE}/manifest.json`
+    ];
+    let QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
     const LS_OPENAI_KEY = 'qhizhtml_openai_api_key_v1';
     const LS_AI_EXPLANATIONS = 'qhizhtml_ai_explanations_v1';
 
@@ -1714,9 +1731,8 @@
       "QuizApp Crypto AI v2\n" +
       "Guida rapida alle funzioni principali\n\n" +
       "1) Caricamento dati\n" +
-      "- Scegli file: apre un JSON locale con le domande.\n" +
-      "- Carica URL: scarica un JSON da un link web.\n" +
-      "- Usa JSON: incolla direttamente il contenuto JSON.\n" +
+      "- Scegli file: apre la lista JSON da GitHub (manifest remoto).\n" +
+      "- Carica URL e Usa JSON sono disattivati in questa versione.\n" +
       "Dopo il caricamento, l'app prepara capitoli, statistiche e controlli quiz.\n\n" +
       "2) Selezione capitoli e numero domande\n" +
       "- Seleziona i capitoli da includere nel test.\n" +
@@ -3096,9 +3112,20 @@
       return out;
     }
 
+    function decodePathPart(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+      try {
+        return decodeURIComponent(raw);
+      } catch {
+        return raw;
+      }
+    }
+
     function getJsonBaseName(name) {
       const src = String(name || '').trim();
-      const plain = src.split('/').pop().split('\\').pop();
+      const noQuery = src.split('?')[0].split('#')[0];
+      const plain = decodePathPart(noQuery.split('/').pop().split('\\').pop());
       return plain.replace(/\.json$/i, '').trim();
     }
 
@@ -3117,15 +3144,153 @@
 
     function buildPath(base, name) {
       if (!base) return name;
-      return base.endsWith('/') ? (base + name) : (base + '/' + name);
+      const b = String(base || '').trim();
+      const n = String(name || '').trim();
+      if (!n) return b;
+      if (/^https?:\/\//i.test(n)) return n;
+      if (/^https?:\/\//i.test(b)) {
+        const encoded = n
+          .split('/')
+          .map((seg) => {
+            const raw = String(seg || '').trim();
+            if (!raw) return raw;
+            try {
+              return encodeURIComponent(decodeURIComponent(raw));
+            } catch {
+              return encodeURIComponent(raw);
+            }
+          })
+          .join('/');
+        return b.endsWith('/') ? (b + encoded) : (b + '/' + encoded);
+      }
+      return b.endsWith('/') ? (b + n) : (b + '/' + n);
     }
 
     function basenameOnly(value) {
-      return String(value || '').split('/').pop().split('\\').pop().trim();
+      const src = String(value || '').split('?')[0].split('#')[0];
+      return decodePathPart(src.split('/').pop().split('\\').pop().trim());
     }
 
     function jsonDirCandidates() {
+      if (QUIZ_GIT_MODE) return [QUIZ_GIT_BASE];
       return ['JSON', '../JSON', '../../JSON'];
+    }
+
+    function toGithubRawUrl(urlLike) {
+      const raw = String(urlLike || '').trim();
+      if (!raw) return '';
+      const m = raw.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+      if (m && m[1]) return `https://drive.google.com/uc?export=download&id=${m[1]}`;
+      return raw;
+    }
+
+    function parseManifestEntries(payload) {
+      const list = [];
+      const pushEntry = (nameRaw, urlRaw, sourceObj = null) => {
+        const name = String(nameRaw || '').trim();
+        const candidateUrl = String(urlRaw || '').trim();
+        if (!candidateUrl) return;
+        const isJson = /\.json(?:[?#].*)?$/i.test(name) || /\.json(?:[?#].*)?$/i.test(candidateUrl);
+        if (!isJson) return;
+        let fullUrl = toGithubRawUrl(candidateUrl);
+        if (!/^https?:\/\//i.test(fullUrl)) {
+          try {
+            fullUrl = new URL(fullUrl.replace(/^\/+/, ''), `${QUIZ_GIT_BASE}/`).href;
+          } catch {
+            return;
+          }
+        }
+        const visible = name || basenameOnly(fullUrl) || 'JSON';
+        const label = visible.replace(/\.json$/i, '').trim();
+        const src = (sourceObj && typeof sourceObj === 'object') ? sourceObj : {};
+        list.push({
+          label,
+          name: (name || basenameOnly(fullUrl) || '').trim(),
+          url: fullUrl,
+          pdf: String(src.pdf || src.pdfName || '').trim(),
+          qmap: String(src.qmap || src.qmapName || '').trim(),
+          xlsx: String(src.xlsx || src.xlsxName || '').trim()
+        });
+      };
+
+      const scan = (node) => {
+        if (!node) return;
+        if (Array.isArray(node)) {
+          node.forEach((it) => {
+            if (typeof it === 'string') {
+              pushEntry(it, it, null);
+              return;
+            }
+            if (it && typeof it === 'object') {
+              const n = it.name || it.file || it.filename || it.title || it.jsonName || it.path || it.json || '';
+              const u = it.url || it.downloadUrl || it.download_url || it.href || it.jsonUrl || it.json || it.path || '';
+              pushEntry(n, u, it);
+            }
+          });
+          return;
+        }
+        if (node && typeof node === 'object') {
+          const arrays = ['files', 'entries', 'items', 'json', 'jsons', 'datasets', 'manifest'];
+          let found = false;
+          arrays.forEach((k) => {
+            if (Array.isArray(node[k])) {
+              found = true;
+              scan(node[k]);
+            }
+          });
+          if (!found) {
+            Object.values(node).forEach((v) => {
+              if (Array.isArray(v)) scan(v);
+            });
+          }
+        }
+      };
+
+      scan(payload);
+      const uniq = new Map();
+      list.forEach((it) => {
+        const key = String(it.url || '').trim();
+        if (key && !uniq.has(key)) uniq.set(key, it);
+      });
+      return Array.from(uniq.values()).sort((a, b) => a.label.localeCompare(b.label, 'it'));
+    }
+
+    async function fetchManifestEntriesFromGithub() {
+      let lastErr = null;
+      for (const url of QUIZ_GIT_MANIFEST_CANDIDATES) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const payload = await res.json();
+          const entries = parseManifestEntries(payload);
+          if (entries.length) return { entries, url };
+          lastErr = new Error('Manifest senza voci JSON valide.');
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr || new Error('Manifest non disponibile.');
+    }
+
+    function resetLoadedDatasetState(msg) {
+      RAW_ITEMS = [];
+      ALL_ITEMS = [];
+      CURRENT_ITEMS = [];
+      CURRENT_DISPLAYED = [];
+      currentMode = 'base';
+      currentJsonName = 'JSON';
+      currentJsonSource = { type: 'none' };
+      clearPdfLinkState();
+      if (els.list()) els.list().innerHTML = '';
+      if (els.chapters()) els.chapters().innerHTML = '<div class="muted">Caricamento capitoli…</div>';
+      if (els.fileBadge()) {
+        els.fileBadge().textContent = 'Nessun file…';
+        els.fileBadge().title = 'Nessun file selezionato';
+      }
+      if (els.filtersPanel()) els.filtersPanel().classList.add('hidden');
+      refreshModeUI();
+      renderStats();
+      setStatus(msg || 'Nessun dataset caricato.');
     }
 
     function normalizeZipPath(path) {
@@ -3568,6 +3733,8 @@
     }
 
     function mapBaseCandidatesForUrl() {
+      const forced = String((currentJsonSource && currentJsonSource.baseUrl) || '').trim();
+      if (forced) return [forced.replace(/\/+$/, '')];
       const src = String(currentJsonName || '').trim();
       if (!/^https?:\/\//i.test(src)) return [];
       try {
@@ -3815,6 +3982,44 @@
       if (!currentJsonSource || currentJsonSource.type !== 'url') {
         lastMappingDiagnostic = 'sorgente locale senza mappa embedded';
         return;
+      }
+
+      const manifestEntry = (currentJsonSource && currentJsonSource.manifestEntry) ? currentJsonSource.manifestEntry : null;
+      const explicitBase = (currentJsonSource && currentJsonSource.baseUrl) ? String(currentJsonSource.baseUrl).replace(/\/+$/, '') : '';
+      if (manifestEntry && explicitBase) {
+        const explicitQmap = String(manifestEntry.qmap || '').trim();
+        const explicitPdf = String(manifestEntry.pdf || '').trim();
+        if (explicitQmap) {
+          const payload = await tryFetchJson(buildPath(explicitBase, explicitQmap));
+          if (payload && typeof payload === 'object') {
+            const chapterToPage = chapterMapFromPayload(payload);
+            if (chapterToPage) {
+              let pdfPath = '';
+              if (explicitPdf) pdfPath = buildPath(explicitBase, explicitPdf);
+              if (!pdfPath) {
+                const pdfNameField = String(payload.pdfName || payload.pdfPath || '').trim();
+                if (pdfNameField) {
+                  pdfPath = /^(https?:)?\/\//i.test(pdfNameField)
+                    ? pdfNameField
+                    : buildPath(explicitBase, basenameOnly(pdfNameField));
+                }
+              }
+              if (!pdfPath) pdfPath = buildPath(explicitBase, `${jsonBase}.pdf`);
+              if (await resourceExists(pdfPath)) {
+                currentPdfLinkCfg = {
+                  baseName: jsonBase,
+                  jsonBase,
+                  pdf: basenameOnly(explicitPdf || pdfPath) || `${jsonBase}.pdf`,
+                  xlsx: `${jsonBase}.xlsx`,
+                  pdfPath,
+                  chapterToPage
+                };
+                lastMappingDiagnostic = `mappa da manifest_full (${explicitQmap})`;
+                return;
+              }
+            }
+          }
+        }
       }
 
       const mapFileCandidates = Array.from(new Set([
@@ -4381,7 +4586,89 @@
     }
 
     // ======= Data Loading =======
-    els.fileBtn().addEventListener('click', () => els.fileInput().click());
+    async function loadGithubJsonEntry(entry) {
+      if (!entry || !entry.url) {
+        setStatus('Voce JSON non valida nel manifest GitHub.');
+        return;
+      }
+      const url = String(entry.url || '').trim();
+      const label = String(entry.label || basenameOnly(url) || 'JSON').replace(/\.json$/i, '').trim();
+      setDatasetDirButtonVisible(false);
+      if (els.fileBadge()) {
+        els.fileBadge().textContent = label || 'JSON';
+        els.fileBadge().title = url;
+      }
+      if (els.urlBadge()) {
+        els.urlBadge().textContent = 'GitHub';
+        els.urlBadge().title = url;
+      }
+      currentJsonName = String(entry.name || basenameOnly(url) || url).trim();
+      currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE, manifestEntry: entry };
+      setStatus(`Caricamento "${label}" da GitHub...`);
+
+      try {
+        const data = await loadFromUrl(url);
+        if (!data) {
+          resetLoadedDatasetState('Caricamento JSON fallito da GitHub.');
+          return;
+        }
+        RAW_ITEMS = data;
+        ALL_ITEMS = validateItems(RAW_ITEMS) || [];
+        if (!ALL_ITEMS.length) {
+          resetLoadedDatasetState('JSON vuoto o non valido.');
+          return;
+        }
+        archiveCurrentJson(RAW_ITEMS, label || 'JSON');
+        await refreshPdfChapterMapForCurrentJson();
+        currentMode = 'base';
+        setStatus(`Dati caricati da GitHub ✓ (${ALL_ITEMS.length} quiz) — ${currentMappingStatusText()} [base: ${QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE}].`);
+        renderChapters();
+        document.getElementById('filters-panel').classList.remove('hidden');
+        refreshModeUI();
+        renderStats();
+        if (els.num()) els.num().value = Math.min(30, ALL_ITEMS.length);
+      } catch (err) {
+        resetLoadedDatasetState('Errore caricamento JSON GitHub: ' + (err?.message || err));
+      }
+    }
+
+    async function chooseJsonFromGithubManifest() {
+      setStatus('Carico manifest GitHub...');
+      try {
+        const { entries, url } = await fetchManifestEntriesFromGithub();
+        try {
+          const u = new URL(url, window.location.href);
+          const path = String(u.pathname || '');
+          const i = path.lastIndexOf('/');
+          const dir = i >= 0 ? path.slice(0, i + 1) : '/';
+          QUIZ_GIT_ACTIVE_BASE = (u.origin + dir).replace(/\/+$/, '');
+        } catch {
+          QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
+        }
+        if (els.urlBadge()) {
+          els.urlBadge().textContent = 'Manifest GitHub';
+          els.urlBadge().title = url;
+        }
+        openChoiceModal(
+          'Scegli JSON da GitHub',
+          entries.map((entry) => ({
+            label: entry.label || 'JSON',
+            onClick: () => { loadGithubJsonEntry(entry); }
+          }))
+        );
+        setStatus(`Manifest GitHub caricato (${entries.length} JSON).`);
+      } catch (e) {
+        resetLoadedDatasetState('Manifest GitHub non disponibile o vuoto.');
+      }
+    }
+
+    els.fileBtn().addEventListener('click', async () => {
+      if (QUIZ_GIT_MODE) {
+        await chooseJsonFromGithubManifest();
+        return;
+      }
+      els.fileInput().click();
+    });
 
     els.fileInput().addEventListener('change', async (e) => {
       const files = Array.from((e.target.files || []));
@@ -4445,6 +4732,10 @@
     }
 
     els.urlBtn().addEventListener('click', async () => {
+      if (QUIZ_GIT_MODE) {
+        setStatus('In QuizGit usa "Scegli file" per selezionare da GitHub.');
+        return;
+      }
       const url = (els.urlInput().value || '').trim();
       if (!url) { setStatus('Inserisci un URL.'); els.urlBadge().textContent = 'Nessun URL…'; return; }
       setDatasetDirButtonVisible(false);
@@ -4456,6 +4747,10 @@
     });
 
     els.btnParse().addEventListener('click', async () => {
+      if (QUIZ_GIT_MODE) {
+        setStatus('In QuizGit l\'incolla JSON e\' disattivato.');
+        return;
+      }
       try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
       catch (err) { setStatus('Errore parsing JSON incollato: ' + err.message); }
     });
@@ -4830,6 +5125,19 @@
       ]);
     });
     currentMode = 'base';
+    if (QUIZ_GIT_MODE) {
+      const fileBtn = els.fileBtn();
+      if (fileBtn) fileBtn.innerHTML = '<i>☁️</i> Scegli da GitHub';
+      const fileInput = els.fileInput();
+      if (fileInput) fileInput.disabled = true;
+      const datasetBtn = els.datasetDirBtn();
+      if (datasetBtn) datasetBtn.classList.add('hidden');
+      const urlField = els.urlBtn() ? els.urlBtn().closest('.field') : null;
+      if (urlField) urlField.classList.add('hidden');
+      const pasteField = els.btnParse() ? els.btnParse().closest('.field') : null;
+      if (pasteField) pasteField.classList.add('hidden');
+      setStatus('QuizGit pronto: scegli il dataset JSON da GitHub.');
+    }
     setPercentEnabled(false);
     updateTopDateTime();
     setInterval(updateTopDateTime, 1000);

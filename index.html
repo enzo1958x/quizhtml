@@ -3111,9 +3111,20 @@
       return out;
     }
 
+    function decodePathPart(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return '';
+      try {
+        return decodeURIComponent(raw);
+      } catch {
+        return raw;
+      }
+    }
+
     function getJsonBaseName(name) {
       const src = String(name || '').trim();
-      const plain = src.split('/').pop().split('\\').pop();
+      const noQuery = src.split('?')[0].split('#')[0];
+      const plain = decodePathPart(noQuery.split('/').pop().split('\\').pop());
       return plain.replace(/\.json$/i, '').trim();
     }
 
@@ -3136,7 +3147,8 @@
     }
 
     function basenameOnly(value) {
-      return String(value || '').split('/').pop().split('\\').pop().trim();
+      const src = String(value || '').split('?')[0].split('#')[0];
+      return decodePathPart(src.split('/').pop().split('\\').pop().trim());
     }
 
     function jsonDirCandidates() {

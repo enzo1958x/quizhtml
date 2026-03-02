@@ -2,7 +2,7 @@
 <html lang="it"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gitconc</title>
+  <title>AlgoTeam 2026</title>
   <style>
     :root {
       --bg: #f7f4ed;
@@ -91,6 +91,13 @@
       gap: 1rem;
       justify-content: space-between;
       position: relative;
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      min-width: 0;
     }
 
     .top-datetime {
@@ -1479,9 +1486,14 @@
         margin-left: 0;
         width: 100%;
       }
-      .top-datetime {
+      .top-meta {
         order: 2;
         width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .top-datetime {
+        order: 2;
         text-align: center;
       }
       .top-actions {
@@ -1605,13 +1617,15 @@
   <header>
     <div class="wrap">
       <div class="top">
-        <div id="top-datetime" class="top-datetime">23/02/2026, 06:29:43</div>
+        <div class="top-meta">
+          <div id="top-datetime" class="top-datetime">23/02/2026, 06:29:43</div>
+          <span id="auth-user-label" class="badge">Utente: —</span>
+        </div>
         <div class="brand">
-          <div class="logo">Q</div>
-          <h1>Gitconc</h1>
+          <div class="logo">©</div>
+          <h1>AlgoTeam 2026</h1>
         </div>
         <div class="top-actions">
-          <span id="auth-user-label" class="badge">Utente: —</span>
           <button id="btn-auth" class="btn btn-ghost" type="button">Login</button>
           <button id="btn-help" class="btn btn-ghost" type="button">Help</button>
         </div>
@@ -5520,7 +5534,7 @@
       if (fileInput) fileInput.disabled = true;
       const datasetBtn = els.datasetDirBtn();
       if (datasetBtn) datasetBtn.classList.add('hidden');
-      setStatus('Gitconc pronto: esegui login e carica un dataset (GitHub, URL o Incolla JSON).');
+      setStatus('AlgoTeam pronto: esegui login e carica un dataset (GitHub, URL o Incolla JSON).');
     }
     setPercentEnabled(false);
     updateTopDateTime();

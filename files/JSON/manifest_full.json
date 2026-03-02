@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "generatedAt": "2026-03-02T08:37:43.287170+00:00",
+  "version": 2,
+  "generatedAt": "2026-03-02T08:51:39.415848+00:00",
   "basePath": ".",
   "entries": [
     {
@@ -45,11 +45,6 @@
     }
   ],
   "allFiles": [
-    {
-      "name": ".DS_Store",
-      "url": ".DS_Store",
-      "type": "ds_store"
-    },
     {
       "name": "Algoritmi.json",
       "url": "Algoritmi.json",
@@ -129,6 +124,16 @@
       "name": "corporate_planning.qmap",
       "url": "corporate_planning.qmap",
       "type": "qmap"
+    },
+    {
+      "name": "manifest.json",
+      "url": "manifest.json",
+      "type": "json"
+    },
+    {
+      "name": "manifest_full.json",
+      "url": "manifest_full.json",
+      "type": "json"
     }
   ]
 }

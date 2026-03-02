@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-02T08:37:43.287170+00:00",
+  "basePath": ".",
+  "entries": [
+    {
+      "name": "Algoritmi.json",
+      "url": "Algoritmi.json",
+      "json": "Algoritmi.json",
+      "pdf": "",
+      "qmap": "",
+      "xlsx": ""
+    },
+    {
+      "name": "Corporate planning.json",
+      "url": "Corporate planning.json",
+      "json": "Corporate planning.json",
+      "pdf": "Corporate planning.pdf",
+      "qmap": "corporate_planning.qmap",
+      "xlsx": ""
+    },
+    {
+      "name": "Ingegneria_autovalutazione.json",
+      "url": "Ingegneria_autovalutazione.json",
+      "json": "Ingegneria_autovalutazione.json",
+      "pdf": "",
+      "qmap": "",
+      "xlsx": ""
+    },
+    {
+      "name": "Programmazione distribuita.json",
+      "url": "Programmazione distribuita.json",
+      "json": "Programmazione distribuita.json",
+      "pdf": "Programmazione distribuita.pdf",
+      "qmap": "Programmazione distribuita.qmap",
+      "xlsx": "Programmazione distribuita.xlsx"
+    },
+    {
+      "name": "Psicologia Generale.json",
+      "url": "Psicologia Generale.json",
+      "json": "Psicologia Generale.json",
+      "pdf": "Psicologia Generale.pdf",
+      "qmap": "Psicologia Generale.qmap",
+      "xlsx": "Psicologia Generale.xlsx"
+    }
+  ],
+  "allFiles": [
+    {
+      "name": ".DS_Store",
+      "url": ".DS_Store",
+      "type": "ds_store"
+    },
+    {
+      "name": "Algoritmi.json",
+      "url": "Algoritmi.json",
+      "type": "json"
+    },
+    {
+      "name": "Corporate planning.json",
+      "url": "Corporate planning.json",
+      "type": "json"
+    },
+    {
+      "name": "Corporate planning.pdf",
+      "url": "Corporate planning.pdf",
+      "type": "pdf"
+    },
+    {
+      "name": "Corporate_planning_pdf_map.old",
+      "url": "Corporate_planning_pdf_map.old",
+      "type": "old"
+    },
+    {
+      "name": "Ingegneria_autovalutazione.json",
+      "url": "Ingegneria_autovalutazione.json",
+      "type": "json"
+    },
+    {
+      "name": "Programmazione distribuita.json",
+      "url": "Programmazione distribuita.json",
+      "type": "json"
+    },
+    {
+      "name": "Programmazione distribuita.pdf",
+      "url": "Programmazione distribuita.pdf",
+      "type": "pdf"
+    },
+    {
+      "name": "Programmazione distribuita.qmap",
+      "url": "Programmazione distribuita.qmap",
+      "type": "qmap"
+    },
+    {
+      "name": "Programmazione distribuita.xlsx",
+      "url": "Programmazione distribuita.xlsx",
+      "type": "xlsx"
+    },
+    {
+      "name": "Programmazione distribuita_pdf_map.old",
+      "url": "Programmazione distribuita_pdf_map.old",
+      "type": "old"
+    },
+    {
+      "name": "Psicologia Generale.json",
+      "url": "Psicologia Generale.json",
+      "type": "json"
+    },
+    {
+      "name": "Psicologia Generale.pdf",
+      "url": "Psicologia Generale.pdf",
+      "type": "pdf"
+    },
+    {
+      "name": "Psicologia Generale.qmap",
+      "url": "Psicologia Generale.qmap",
+      "type": "qmap"
+    },
+    {
+      "name": "Psicologia Generale.xlsx",
+      "url": "Psicologia Generale.xlsx",
+      "type": "xlsx"
+    },
+    {
+      "name": "Stampa_errori_quiz.pdf",
+      "url": "Stampa_errori_quiz.pdf",
+      "type": "pdf"
+    },
+    {
+      "name": "corporate_planning.qmap",
+      "url": "corporate_planning.qmap",
+      "type": "qmap"
+    }
+  ]
+}

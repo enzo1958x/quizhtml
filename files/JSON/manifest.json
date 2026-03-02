@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-02T08:37:43.286439+00:00",
+  "basePath": ".",
+  "files": [
+    {
+      "name": "Algoritmi.json",
+      "url": "Algoritmi.json"
+    },
+    {
+      "name": "Corporate planning.json",
+      "url": "Corporate planning.json"
+    },
+    {
+      "name": "Ingegneria_autovalutazione.json",
+      "url": "Ingegneria_autovalutazione.json"
+    },
+    {
+      "name": "Programmazione distribuita.json",
+      "url": "Programmazione distribuita.json"
+    },
+    {
+      "name": "Psicologia Generale.json",
+      "url": "Psicologia Generale.json"
+    }
+  ]
+}

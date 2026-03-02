@@ -1420,8 +1420,13 @@
     }
 
 
-    body.auth-locked header,
-    body.auth-locked main {
+    body.auth-locked header {
+      filter: blur(2px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    body.auth-locked main > *:not(#auth-modal) {
       filter: blur(2px);
       pointer-events: none;
       user-select: none;

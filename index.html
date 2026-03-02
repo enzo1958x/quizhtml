@@ -3143,7 +3143,26 @@
 
     function buildPath(base, name) {
       if (!base) return name;
-      return base.endsWith('/') ? (base + name) : (base + '/' + name);
+      const b = String(base || '').trim();
+      const n = String(name || '').trim();
+      if (!n) return b;
+      if (/^https?:\/\//i.test(n)) return n;
+      if (/^https?:\/\//i.test(b)) {
+        const encoded = n
+          .split('/')
+          .map((seg) => {
+            const raw = String(seg || '').trim();
+            if (!raw) return raw;
+            try {
+              return encodeURIComponent(decodeURIComponent(raw));
+            } catch {
+              return encodeURIComponent(raw);
+            }
+          })
+          .join('/');
+        return b.endsWith('/') ? (b + encoded) : (b + '/' + encoded);
+      }
+      return b.endsWith('/') ? (b + n) : (b + '/' + n);
     }
 
     function basenameOnly(value) {

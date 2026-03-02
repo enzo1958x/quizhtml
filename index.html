@@ -3166,7 +3166,7 @@
 
     function parseManifestEntries(payload) {
       const list = [];
-      const pushEntry = (nameRaw, urlRaw) => {
+      const pushEntry = (nameRaw, urlRaw, sourceObj = null) => {
         const name = String(nameRaw || '').trim();
         const candidateUrl = String(urlRaw || '').trim();
         if (!candidateUrl) return;
@@ -3182,7 +3182,15 @@
         }
         const visible = name || basenameOnly(fullUrl) || 'JSON';
         const label = visible.replace(/\.json$/i, '').trim();
-        list.push({ label, url: fullUrl });
+        const src = (sourceObj && typeof sourceObj === 'object') ? sourceObj : {};
+        list.push({
+          label,
+          name: (name || basenameOnly(fullUrl) || '').trim(),
+          url: fullUrl,
+          pdf: String(src.pdf || src.pdfName || '').trim(),
+          qmap: String(src.qmap || src.qmapName || '').trim(),
+          xlsx: String(src.xlsx || src.xlsxName || '').trim()
+        });
       };
 
       const scan = (node) => {
@@ -3190,13 +3198,13 @@
         if (Array.isArray(node)) {
           node.forEach((it) => {
             if (typeof it === 'string') {
-              pushEntry(it, it);
+              pushEntry(it, it, null);
               return;
             }
             if (it && typeof it === 'object') {
-              const n = it.name || it.file || it.filename || it.title || it.jsonName || it.path || '';
+              const n = it.name || it.file || it.filename || it.title || it.jsonName || it.path || it.json || '';
               const u = it.url || it.downloadUrl || it.download_url || it.href || it.jsonUrl || it.json || it.path || '';
-              pushEntry(n, u);
+              pushEntry(n, u, it);
             }
           });
           return;
@@ -3705,6 +3713,8 @@
     }
 
     function mapBaseCandidatesForUrl() {
+      const forced = String((currentJsonSource && currentJsonSource.baseUrl) || '').trim();
+      if (forced) return [forced.replace(/\/+$/, '')];
       const src = String(currentJsonName || '').trim();
       if (!/^https?:\/\//i.test(src)) return [];
       try {
@@ -3952,6 +3962,44 @@
       if (!currentJsonSource || currentJsonSource.type !== 'url') {
         lastMappingDiagnostic = 'sorgente locale senza mappa embedded';
         return;
+      }
+
+      const manifestEntry = (currentJsonSource && currentJsonSource.manifestEntry) ? currentJsonSource.manifestEntry : null;
+      const explicitBase = (currentJsonSource && currentJsonSource.baseUrl) ? String(currentJsonSource.baseUrl).replace(/\/+$/, '') : '';
+      if (manifestEntry && explicitBase) {
+        const explicitQmap = String(manifestEntry.qmap || '').trim();
+        const explicitPdf = String(manifestEntry.pdf || '').trim();
+        if (explicitQmap) {
+          const payload = await tryFetchJson(buildPath(explicitBase, explicitQmap));
+          if (payload && typeof payload === 'object') {
+            const chapterToPage = chapterMapFromPayload(payload);
+            if (chapterToPage) {
+              let pdfPath = '';
+              if (explicitPdf) pdfPath = buildPath(explicitBase, explicitPdf);
+              if (!pdfPath) {
+                const pdfNameField = String(payload.pdfName || payload.pdfPath || '').trim();
+                if (pdfNameField) {
+                  pdfPath = /^(https?:)?\/\//i.test(pdfNameField)
+                    ? pdfNameField
+                    : buildPath(explicitBase, basenameOnly(pdfNameField));
+                }
+              }
+              if (!pdfPath) pdfPath = buildPath(explicitBase, `${jsonBase}.pdf`);
+              if (await resourceExists(pdfPath)) {
+                currentPdfLinkCfg = {
+                  baseName: jsonBase,
+                  jsonBase,
+                  pdf: basenameOnly(explicitPdf || pdfPath) || `${jsonBase}.pdf`,
+                  xlsx: `${jsonBase}.xlsx`,
+                  pdfPath,
+                  chapterToPage
+                };
+                lastMappingDiagnostic = `mappa da manifest_full (${explicitQmap})`;
+                return;
+              }
+            }
+          }
+        }
       }
 
       const mapFileCandidates = Array.from(new Set([
@@ -4534,8 +4582,8 @@
         els.urlBadge().textContent = 'GitHub';
         els.urlBadge().title = url;
       }
-      currentJsonName = url;
-      currentJsonSource = { type: 'url' };
+      currentJsonName = String(entry.name || basenameOnly(url) || url).trim();
+      currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_BASE, manifestEntry: entry };
       setStatus(`Caricamento "${label}" da GitHub...`);
 
       try {
@@ -4553,7 +4601,7 @@
         archiveCurrentJson(RAW_ITEMS, label || 'JSON');
         await refreshPdfChapterMapForCurrentJson();
         currentMode = 'base';
-        setStatus(`Dati caricati da GitHub ✓ (${ALL_ITEMS.length} quiz) — ${currentMappingStatusText()}.`);
+        setStatus(`Dati caricati da GitHub ✓ (${ALL_ITEMS.length} quiz) — ${currentMappingStatusText()} [base: ${QUIZ_GIT_BASE}].`);
         renderChapters();
         document.getElementById('filters-panel').classList.remove('hidden');
         refreshModeUI();

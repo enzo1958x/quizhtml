@@ -2042,10 +2042,10 @@
     function logoutAuth() {
       currentUser = null;
       try { sessionStorage.removeItem(SS_AUTH_USER); } catch { }
+      resetLoadedDatasetState('Logout eseguito. Stato reset: effettua di nuovo il login.');
       document.body.classList.add('auth-locked');
       updateAuthUi();
       openAuthModal();
-      setStatus('Logout eseguito. Effettua di nuovo il login.');
     }
 
     function ensureAuth() {
@@ -4975,8 +4975,8 @@
         els.urlBadge().title = url;
       }
       currentJsonName = String(entry.name || basenameOnly(url) || url).trim();
-      updateHeroJsonName(currentJsonName);
       currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE, manifestEntry: entry };
+      updateHeroJsonName(currentJsonName);
       setStatus(`Caricamento "${label}" da GitHub...`);
 
       try {
@@ -5054,10 +5054,10 @@
       els.fileBadge().textContent = file.name;
       els.fileBadge().title = file.name;
       currentJsonName = file.name;
-      updateHeroJsonName(currentJsonName);
       const maybePath = String(file.path || '').trim();
       const dirUrl = toFileDirUrlFromPath(maybePath);
       currentJsonSource = { type: 'file', filesByName, dirUrl };
+      updateHeroJsonName(currentJsonName);
       try {
         const text = await file.text(); RAW_ITEMS = JSON.parse(text);
         ALL_ITEMS = validateItems(RAW_ITEMS) || [];
@@ -5113,15 +5113,15 @@
       setDatasetDirButtonVisible(false);
       els.urlBadge().textContent = url; els.urlBadge().title = url;
       currentJsonName = url;
-      updateHeroJsonName(currentJsonName);
       currentJsonSource = { type: 'url' };
+      updateHeroJsonName(currentJsonName);
       const data = await loadFromUrl(url);
       if (data) { RAW_ITEMS = data; ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('Dati caricati da URL ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
     });
 
     els.btnParse().addEventListener('click', async () => {
       if (!ensureAuth()) return;
-      try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; updateHeroJsonName(currentJsonName); currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
+      try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; updateHeroJsonName(currentJsonName); archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
       catch (err) { setStatus('Errore parsing JSON incollato: ' + err.message); }
     });
 

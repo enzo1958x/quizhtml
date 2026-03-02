@@ -16,7 +16,7 @@
       "url": "Corporate planning.json",
       "json": "Corporate planning.json",
       "pdf": "Corporate planning.pdf",
-      "qmap": "corporate_planning.qmap",
+      "qmap": "corporate_planning_pdf_map.json",
       "xlsx": ""
     },
     {
@@ -32,7 +32,7 @@
       "url": "Programmazione distribuita.json",
       "json": "Programmazione distribuita.json",
       "pdf": "Programmazione distribuita.pdf",
-      "qmap": "Programmazione distribuita.qmap",
+      "qmap": "programmazione_distribuita_pdf_map.json",
       "xlsx": "Programmazione distribuita.xlsx"
     },
     {
@@ -40,7 +40,7 @@
       "url": "Psicologia Generale.json",
       "json": "Psicologia Generale.json",
       "pdf": "Psicologia Generale.pdf",
-      "qmap": "Psicologia Generale.qmap",
+      "qmap": "psicologia_generale_pdf_map.json",
       "xlsx": "Psicologia Generale.xlsx"
     }
   ],
@@ -61,6 +61,16 @@
       "type": "pdf"
     },
     {
+      "name": "corporate_planning.qmap",
+      "url": "corporate_planning.qmap",
+      "type": "qmap"
+    },
+    {
+      "name": "corporate_planning_pdf_map.json",
+      "url": "corporate_planning_pdf_map.json",
+      "type": "json"
+    },
+    {
       "name": "Corporate_planning_pdf_map.old",
       "url": "Corporate_planning_pdf_map.old",
       "type": "old"
@@ -68,6 +78,16 @@
     {
       "name": "Ingegneria_autovalutazione.json",
       "url": "Ingegneria_autovalutazione.json",
+      "type": "json"
+    },
+    {
+      "name": "manifest.json",
+      "url": "manifest.json",
+      "type": "json"
+    },
+    {
+      "name": "manifest_full.json",
+      "url": "manifest_full.json",
       "type": "json"
     },
     {
@@ -96,6 +116,11 @@
       "type": "old"
     },
     {
+      "name": "programmazione_distribuita_pdf_map.json",
+      "url": "programmazione_distribuita_pdf_map.json",
+      "type": "json"
+    },
+    {
       "name": "Psicologia Generale.json",
       "url": "Psicologia Generale.json",
       "type": "json"
@@ -116,24 +141,14 @@
       "type": "xlsx"
     },
     {
+      "name": "psicologia_generale_pdf_map.json",
+      "url": "psicologia_generale_pdf_map.json",
+      "type": "json"
+    },
+    {
       "name": "Stampa_errori_quiz.pdf",
       "url": "Stampa_errori_quiz.pdf",
       "type": "pdf"
-    },
-    {
-      "name": "corporate_planning.qmap",
-      "url": "corporate_planning.qmap",
-      "type": "qmap"
-    },
-    {
-      "name": "manifest.json",
-      "url": "manifest.json",
-      "type": "json"
-    },
-    {
-      "name": "manifest_full.json",
-      "url": "manifest_full.json",
-      "type": "json"
     }
   ]
 }

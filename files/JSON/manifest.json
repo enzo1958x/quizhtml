@@ -14,7 +14,7 @@
       "name": "Corporate planning.json",
       "url": "Corporate planning.json",
       "pdf": "Corporate planning.pdf",
-      "qmap": "corporate_planning.qmap",
+      "qmap": "corporate_planning_pdf_map.json",
       "xlsx": ""
     },
     {
@@ -28,14 +28,14 @@
       "name": "Programmazione distribuita.json",
       "url": "Programmazione distribuita.json",
       "pdf": "Programmazione distribuita.pdf",
-      "qmap": "Programmazione distribuita.qmap",
+      "qmap": "programmazione_distribuita_pdf_map.json",
       "xlsx": "Programmazione distribuita.xlsx"
     },
     {
       "name": "Psicologia Generale.json",
       "url": "Psicologia Generale.json",
       "pdf": "Psicologia Generale.pdf",
-      "qmap": "Psicologia Generale.qmap",
+      "qmap": "psicologia_generale_pdf_map.json",
       "xlsx": "Psicologia Generale.xlsx"
     }
   ]

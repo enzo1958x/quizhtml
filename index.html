@@ -1481,8 +1481,7 @@
   <main class="wrap">
     <section class="hero">
       <div id="hero-badge" class="hero-badge">Questionario</div>
-      <h2>Configura il test in pochi secondi</h2>
-      <p>Carica il JSON, scegli gli ambiti e distribuisci le domande con precisione.</p>
+      <div id="hero-json-name" class="muted" style="font-size:1.05rem;font-weight:700;">JSON: —</div>
     </section>
     <section class="panel" id="source-panel">
       <div class="row source-top-actions">
@@ -2533,6 +2532,12 @@
     }
 
     function setStatus(msg) { els.statusText().textContent = msg; }
+    function updateHeroJsonName(nameLike) {
+      const el = document.getElementById('hero-json-name');
+      if (!el) return;
+      const base = getJsonBaseName(nameLike || currentJsonName || '');
+      el.textContent = 'JSON: ' + (base || '—');
+    }
     function popupInfo(msg) {
       setStatus(msg);
       window.alert(msg);
@@ -3472,6 +3477,7 @@
       CURRENT_DISPLAYED = [];
       currentMode = 'base';
       currentJsonName = 'JSON';
+      updateHeroJsonName(currentJsonName);
       currentJsonSource = { type: 'none' };
       clearPdfLinkState();
       if (els.list()) els.list().innerHTML = '';
@@ -4811,6 +4817,7 @@
         els.urlBadge().title = url;
       }
       currentJsonName = String(entry.name || basenameOnly(url) || url).trim();
+      updateHeroJsonName(currentJsonName);
       currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE, manifestEntry: entry };
       setStatus(`Caricamento "${label}" da GitHub...`);
 
@@ -4889,6 +4896,7 @@
       els.fileBadge().textContent = file.name;
       els.fileBadge().title = file.name;
       currentJsonName = file.name;
+      updateHeroJsonName(currentJsonName);
       const maybePath = String(file.path || '').trim();
       const dirUrl = toFileDirUrlFromPath(maybePath);
       currentJsonSource = { type: 'file', filesByName, dirUrl };
@@ -4947,6 +4955,7 @@
       setDatasetDirButtonVisible(false);
       els.urlBadge().textContent = url; els.urlBadge().title = url;
       currentJsonName = url;
+      updateHeroJsonName(currentJsonName);
       currentJsonSource = { type: 'url' };
       const data = await loadFromUrl(url);
       if (data) { RAW_ITEMS = data; ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('Dati caricati da URL ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
@@ -4954,7 +4963,7 @@
 
     els.btnParse().addEventListener('click', async () => {
       if (!ensureAuth()) return;
-      try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
+      try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; updateHeroJsonName(currentJsonName); currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
       catch (err) { setStatus('Errore parsing JSON incollato: ' + err.message); }
     });
 
@@ -5343,6 +5352,7 @@
       ]);
     });
     restoreAuthFromSession();
+    updateHeroJsonName(currentJsonName);
     currentMode = 'base';
     if (QUIZ_GIT_MODE) {
       const fileBtn = els.fileBtn();

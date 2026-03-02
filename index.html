@@ -7,6 +7,7 @@
     :root {
       --bg: #f7f4ed;
       --fg: #101114;
+      --logo-bg-url: url('images/logo.jpg');
       --muted: #5f6b7a;
       --accent: #0f766e;
       --ok: #11875d;
@@ -39,7 +40,7 @@
       content: "";
       position: fixed;
       inset: 0;
-      background: url('images/logo.jpg') center center / cover no-repeat;
+      background: var(--logo-bg-url) center center / cover no-repeat;
       opacity: 0.12;
       z-index: -2;
       pointer-events: none;
@@ -1898,6 +1899,20 @@
       const st = document.getElementById('status-text');
       if (st) st.textContent = 'Errore JS: ' + e.message;
     });
+
+    function setBackgroundLogoWithFallback() {
+      const testCandidates = ['images/logo.jpg', 'files/images/logo.jpg'];
+      const tryIndex = (idx) => {
+        if (idx >= testCandidates.length) return;
+        const img = new Image();
+        img.onload = () => {
+          document.documentElement.style.setProperty('--logo-bg-url', `url('${testCandidates[idx]}')`);
+        };
+        img.onerror = () => tryIndex(idx + 1);
+        img.src = testCandidates[idx] + `?v=${Date.now()}`;
+      };
+      tryIndex(0);
+    }
 
     let RAW_ITEMS = []; let ALL_ITEMS = []; let CURRENT_ITEMS = []; let CURRENT_DISPLAYED = [];
     let currentMode = 'base'; // base | wrong
@@ -5491,6 +5506,7 @@
         }
       ]);
     });
+    setBackgroundLogoWithFallback();
     restoreAuthFromSession();
     updateHeroJsonName(currentJsonName);
     currentMode = 'base';

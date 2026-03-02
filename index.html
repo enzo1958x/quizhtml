@@ -1710,10 +1710,6 @@
     const QUIZ_GIT_MODE = true;
     const QUIZ_GIT_BASE = (() => {
       try {
-        const fromStorage = String(localStorage.getItem('quizgit_remote_json_base') || '').trim();
-        if (fromStorage) return fromStorage.replace(/\/+$/, '');
-      } catch { }
-      try {
         return new URL('./files/JSON', window.location.href).href.replace(/\/+$/, '');
       } catch {
         return '/files/JSON';
@@ -1723,6 +1719,7 @@
       `${QUIZ_GIT_BASE}/manifest_full.json`,
       `${QUIZ_GIT_BASE}/manifest.json`
     ];
+    let QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
     const LS_OPENAI_KEY = 'qhizhtml_openai_api_key_v1';
     const LS_AI_EXPLANATIONS = 'qhizhtml_ai_explanations_v1';
 
@@ -4602,7 +4599,7 @@
         els.urlBadge().title = url;
       }
       currentJsonName = String(entry.name || basenameOnly(url) || url).trim();
-      currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_BASE, manifestEntry: entry };
+      currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE, manifestEntry: entry };
       setStatus(`Caricamento "${label}" da GitHub...`);
 
       try {
@@ -4620,7 +4617,7 @@
         archiveCurrentJson(RAW_ITEMS, label || 'JSON');
         await refreshPdfChapterMapForCurrentJson();
         currentMode = 'base';
-        setStatus(`Dati caricati da GitHub ✓ (${ALL_ITEMS.length} quiz) — ${currentMappingStatusText()} [base: ${QUIZ_GIT_BASE}].`);
+        setStatus(`Dati caricati da GitHub ✓ (${ALL_ITEMS.length} quiz) — ${currentMappingStatusText()} [base: ${QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE}].`);
         renderChapters();
         document.getElementById('filters-panel').classList.remove('hidden');
         refreshModeUI();
@@ -4635,6 +4632,15 @@
       setStatus('Carico manifest GitHub...');
       try {
         const { entries, url } = await fetchManifestEntriesFromGithub();
+        try {
+          const u = new URL(url, window.location.href);
+          const path = String(u.pathname || '');
+          const i = path.lastIndexOf('/');
+          const dir = i >= 0 ? path.slice(0, i + 1) : '/';
+          QUIZ_GIT_ACTIVE_BASE = (u.origin + dir).replace(/\/+$/, '');
+        } catch {
+          QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
+        }
         if (els.urlBadge()) {
           els.urlBadge().textContent = 'Manifest GitHub';
           els.urlBadge().title = url;

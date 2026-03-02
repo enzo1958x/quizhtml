@@ -4093,6 +4093,21 @@
       return null;
     }
 
+    function normalizePdfOpenUrl(raw) {
+      const src = String(raw || '').trim();
+      if (!src) return src;
+      try {
+        const u = new URL(src, window.location.href);
+        // Difesa contro doppia codifica (%2520 -> %20)
+        if (u.pathname.includes('%25')) {
+          u.pathname = decodeURIComponent(u.pathname);
+        }
+        return u.toString();
+      } catch {
+        return src.replace(/%2520/g, '%20');
+      }
+    }
+
     function renderWrongPdfChooser(items) {
       // Richiesta utente: nel popup finale non serve più il puntamento PDF.
       const wrap = document.getElementById('rm-pdf-jump');
@@ -4120,7 +4135,7 @@
         return;
       }
       const pdfPath = cfg.pdfPath || cfg.pdf;
-      const url = `${encodeURI(pdfPath)}#page=${picked.page}`;
+      const url = normalizePdfOpenUrl(`${pdfPath}#page=${picked.page}`);
       window.open(url, '_blank');
       setStatus(`Apro ${cfg.pdf} a pagina ${picked.page}.`);
     }
@@ -4166,7 +4181,7 @@
         return;
       }
       const pdfPath = cfg.pdfPath || cfg.pdf;
-      const url = `${encodeURI(pdfPath)}#page=${page}`;
+      const url = normalizePdfOpenUrl(`${pdfPath}#page=${page}`);
       window.open(url, '_blank');
       setStatus(`Apro ${cfg.pdf} a pagina ${page}.`);
     }

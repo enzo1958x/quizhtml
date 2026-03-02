@@ -1924,7 +1924,8 @@
       "Guida rapida alle funzioni principali\n\n" +
       "1) Caricamento dati\n" +
       "- Scegli file: apre la lista JSON da GitHub (manifest remoto).\n" +
-      "- Carica URL e Usa JSON sono disattivati in questa versione.\n" +
+      "- Carica URL: scarica un JSON da un link web.\n" +
+      "- Usa JSON: incolla direttamente il contenuto JSON.\n" +
       "Dopo il caricamento, l'app prepara capitoli, statistiche e controlli quiz.\n\n" +
       "2) Selezione capitoli e numero domande\n" +
       "- Seleziona i capitoli da includere nel test.\n" +
@@ -4940,10 +4941,7 @@
     }
 
     els.urlBtn().addEventListener('click', async () => {
-      if (QUIZ_GIT_MODE) {
-        setStatus('In Gitconc usa "Scegli file" per selezionare da GitHub.');
-        return;
-      }
+      if (!ensureAuth()) return;
       const url = (els.urlInput().value || '').trim();
       if (!url) { setStatus('Inserisci un URL.'); els.urlBadge().textContent = 'Nessun URL…'; return; }
       setDatasetDirButtonVisible(false);
@@ -4955,10 +4953,7 @@
     });
 
     els.btnParse().addEventListener('click', async () => {
-      if (QUIZ_GIT_MODE) {
-        setStatus('In Gitconc l\'incolla JSON e\' disattivato.');
-        return;
-      }
+      if (!ensureAuth()) return;
       try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
       catch (err) { setStatus('Errore parsing JSON incollato: ' + err.message); }
     });
@@ -5356,11 +5351,7 @@
       if (fileInput) fileInput.disabled = true;
       const datasetBtn = els.datasetDirBtn();
       if (datasetBtn) datasetBtn.classList.add('hidden');
-      const urlField = els.urlBtn() ? els.urlBtn().closest('.field') : null;
-      if (urlField) urlField.classList.add('hidden');
-      const pasteField = els.btnParse() ? els.btnParse().closest('.field') : null;
-      if (pasteField) pasteField.classList.add('hidden');
-      setStatus('Gitconc pronto: esegui login e scegli il dataset JSON da GitHub.');
+      setStatus('Gitconc pronto: esegui login e carica un dataset (GitHub, URL o Incolla JSON).');
     }
     setPercentEnabled(false);
     updateTopDateTime();

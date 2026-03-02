@@ -3201,7 +3201,7 @@
       };
       render();
       timerInterval = setInterval(() => {
-        remaining = !isSelectMaxEnabled ? Math.max(0, remaining - 1) : remaining;
+        remaining = !isSelectMaxEnabled() ? Math.max(0, remaining - 1) : remaining;
         elapsed = Math.min(secondsTotal, elapsed + 1);
         elapsedSeconds = elapsed;
         render();
@@ -4728,7 +4728,7 @@
     }
 
     async function generateQuiz() {
-      if (isSelectMaxEnabled) {
+      if (isSelectMaxEnabled()) {
         resetUsed();
       }
       els.list().innerHTML = '';

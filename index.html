@@ -1622,7 +1622,7 @@
   <main class="wrap">
     <section class="hero">
       <div id="hero-badge" class="hero-badge">Questionario</div>
-      <div id="hero-json-name" class="muted" style="font-size:1.05rem;font-weight:700;">JSON: —</div>
+      <div id="hero-json-name" class="muted" style="font-size:1.35rem;font-weight:800;text-align:center;width:100%;"></div>
     </section>
     <section class="panel" id="source-panel">
       <div class="row source-top-actions">
@@ -2691,7 +2691,7 @@
       const el = document.getElementById('hero-json-name');
       if (!el) return;
       const base = getJsonBaseName(nameLike || currentJsonName || '');
-      el.textContent = 'JSON: ' + (base || '—');
+      el.textContent = base || '';
     }
     function popupInfo(msg) {
       setStatus(msg);

@@ -1710,10 +1710,6 @@
     const QUIZ_GIT_MODE = true;
     const QUIZ_GIT_BASE = (() => {
       try {
-        const fromStorage = String(localStorage.getItem('quizgit_remote_json_base') || '').trim();
-        if (fromStorage) return fromStorage.replace(/\/+$/, '');
-      } catch { }
-      try {
         return new URL('./files/JSON', window.location.href).href.replace(/\/+$/, '');
       } catch {
         return '/files/JSON';

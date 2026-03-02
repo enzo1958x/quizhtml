@@ -2,7 +2,7 @@
 <html lang="it"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QuizGit</title>
+  <title>Gitconc</title>
   <style>
     :root {
       --bg: #f7f4ed;
@@ -1418,19 +1418,55 @@
       margin-left: .5rem;
       vertical-align: middle;
     }
+
+
+    body.auth-locked header,
+    body.auth-locked main {
+      filter: blur(2px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #auth-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      background: rgba(15, 23, 42, .35);
+      backdrop-filter: blur(3px);
+    }
+
+    #auth-modal.hidden { display: none; }
+
+    #auth-modal .modal-card {
+      width: min(460px, 92vw);
+      border-radius: 16px;
+      background: #fffaf2;
+      border: 1px solid #e6dfd2;
+      box-shadow: 0 22px 48px rgba(15, 23, 42, .22);
+      padding: 1rem;
+      display: grid;
+      gap: .75rem;
+    }
+
+    #auth-error { color: #b42318; font-weight: 700; min-height: 1.2em; }
+
   </style>
 </head>
 
-<body>
+<body class="auth-locked">
   <header>
     <div class="wrap">
       <div class="top">
         <div id="top-datetime" class="top-datetime">23/02/2026, 06:29:43</div>
         <div class="brand">
           <div class="logo">Q</div>
-          <h1>QuizGit</h1>
+          <h1>Gitconc</h1>
         </div>
         <div class="top-actions">
+          <span id="auth-user-label" class="badge">Utente: —</span>
+          <button id="btn-auth" class="btn btn-ghost" type="button">Login</button>
           <button id="btn-help" class="btn btn-ghost" type="button">Help</button>
         </div>
       </div>
@@ -1653,6 +1689,27 @@
       </div>
     </div>
 
+
+
+    <div id="auth-modal" class="hidden">
+      <div class="modal-card">
+        <div class="modal-title">Accesso Utente</div>
+        <div class="muted">Login da <code>files/users.json</code>. I dati (statistiche/errori/profili) sono separati per utente.</div>
+        <div class="field">
+          <label for="auth-username">Username</label>
+          <input id="auth-username" type="text" autocomplete="username" placeholder="utente">
+        </div>
+        <div class="field">
+          <label for="auth-password">Password</label>
+          <input id="auth-password" type="password" autocomplete="current-password" placeholder="password">
+        </div>
+        <div id="auth-error"></div>
+        <div class="modal-actions">
+          <button id="btn-auth-login" class="btn">Login</button>
+        </div>
+      </div>
+    </div>
+
     <div class="row center" id="proceed-row" style="margin:1rem 0;">
       <button id="btn-go" class="btn btn-lg"><i>▶</i> Procedi</button>
     </div>
@@ -1720,8 +1777,142 @@
       `${QUIZ_GIT_BASE}/manifest.json`
     ];
     let QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
+    const USERS_JSON_CANDIDATES = [
+      (() => { try { return new URL('./files/users.json', window.location.href).href; } catch { return '/files/users.json'; } })(),
+      (() => { try { return new URL('./users.json', window.location.href).href; } catch { return '/users.json'; } })()
+    ];
+    const SS_AUTH_USER = 'gitconc_auth_user_v1';
+    let currentUser = null;
     const LS_OPENAI_KEY = 'qhizhtml_openai_api_key_v1';
     const LS_AI_EXPLANATIONS = 'qhizhtml_ai_explanations_v1';
+
+    function scopedKey(base) {
+      const u = (currentUser && currentUser.username) ? currentUser.username : 'anon';
+      return `${String(base || '').trim()}::${u}`;
+    }
+
+    function setAuthError(msg) {
+      const el = document.getElementById('auth-error');
+      if (el) el.textContent = String(msg || '');
+    }
+
+    function updateAuthUi() {
+      const label = document.getElementById('auth-user-label');
+      if (label) label.textContent = currentUser ? `Utente: ${currentUser.username}` : 'Utente: —';
+      const btn = document.getElementById('btn-auth');
+      if (btn) btn.textContent = currentUser ? 'Logout' : 'Login';
+    }
+
+    function openAuthModal() {
+      const m = document.getElementById('auth-modal');
+      if (m) m.classList.remove('hidden');
+      setAuthError('');
+      const u = document.getElementById('auth-username');
+      if (u) u.focus();
+    }
+
+    function closeAuthModal() {
+      const m = document.getElementById('auth-modal');
+      if (m) m.classList.add('hidden');
+    }
+
+    async function fetchUsersForAuth() {
+      let lastErr = null;
+      for (const url of USERS_JSON_CANDIDATES) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          const src = Array.isArray(data) ? data : (Array.isArray(data.users) ? data.users : data.users || []);
+          const list = [];
+          if (Array.isArray(src)) {
+            src.forEach((u) => {
+              if (!u || typeof u !== 'object') return;
+              const username = String(u.username || u.user || '').trim();
+              const password = String(u.password || u.pass || '').trim();
+              if (username && password) list.push({ username, password });
+            });
+          } else if (src && typeof src === 'object') {
+            Object.entries(src).forEach(([k, v]) => {
+              const username = String(k || '').trim();
+              const password = String(v || '').trim();
+              if (username && password) list.push({ username, password });
+            });
+          }
+          if (list.length) return list;
+          lastErr = new Error('users.json senza utenti validi.');
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr || new Error('users.json non disponibile.');
+    }
+
+    async function doLogin() {
+      const uEl = document.getElementById('auth-username');
+      const pEl = document.getElementById('auth-password');
+      const username = String((uEl && uEl.value) || '').trim();
+      const password = String((pEl && pEl.value) || '').trim();
+      if (!username || !password) {
+        setAuthError('Inserisci username e password.');
+        return false;
+      }
+      try {
+        const users = await fetchUsersForAuth();
+        const found = users.find((x) => String(x.username) === username && String(x.password) === password);
+        if (!found) {
+          setAuthError('Credenziali non valide.');
+          return false;
+        }
+        currentUser = { username: found.username };
+        try { sessionStorage.setItem(SS_AUTH_USER, found.username); } catch { }
+        document.body.classList.remove('auth-locked');
+        closeAuthModal();
+        updateAuthUi();
+        currentProfile = loadCurrentProfile();
+        refreshProfileUI();
+        renderStats();
+        setStatus(`Login eseguito: ${found.username}.`);
+        return true;
+      } catch (e) {
+        setAuthError('Autenticazione non disponibile: ' + (e?.message || e));
+        return false;
+      }
+    }
+
+    function logoutAuth() {
+      currentUser = null;
+      try { sessionStorage.removeItem(SS_AUTH_USER); } catch { }
+      document.body.classList.add('auth-locked');
+      updateAuthUi();
+      openAuthModal();
+      setStatus('Logout eseguito. Effettua di nuovo il login.');
+    }
+
+    function ensureAuth() {
+      if (currentUser && currentUser.username) return true;
+      document.body.classList.add('auth-locked');
+      openAuthModal();
+      setStatus('Effettua login per continuare.');
+      return false;
+    }
+
+    function restoreAuthFromSession() {
+      try {
+        const u = String(sessionStorage.getItem(SS_AUTH_USER) || '').trim();
+        if (u) currentUser = { username: u };
+      } catch { }
+      updateAuthUi();
+      if (currentUser) {
+        document.body.classList.remove('auth-locked');
+        closeAuthModal();
+        currentProfile = loadCurrentProfile();
+        refreshProfileUI();
+      } else {
+        document.body.classList.add('auth-locked');
+        openAuthModal();
+      }
+    }
 
     const HELP_TEXT = (
       "QuizApp Crypto AI v2\n" +
@@ -2036,7 +2227,7 @@
 
     function resolveOpenAiApiKey() {
       try {
-        return String(localStorage.getItem(LS_OPENAI_KEY) || '').trim();
+        return String(localStorage.getItem(scopedKey(LS_OPENAI_KEY)) || '').trim();
       } catch {
         return '';
       }
@@ -2049,10 +2240,10 @@
       const clean = String(value || '').trim();
       try {
         if (clean) {
-          localStorage.setItem(LS_OPENAI_KEY, clean);
+          localStorage.setItem(scopedKey(LS_OPENAI_KEY), clean);
           setStatus('OPENAI_API_KEY salvata.');
         } else {
-          localStorage.removeItem(LS_OPENAI_KEY);
+          localStorage.removeItem(scopedKey(LS_OPENAI_KEY));
           setStatus('OPENAI_API_KEY rimossa.');
         }
       } catch (e) {
@@ -2065,12 +2256,12 @@
     }
 
     function loadAiExplanations() {
-      try { return JSON.parse(localStorage.getItem(LS_AI_EXPLANATIONS) || '{}'); }
+      try { return JSON.parse(localStorage.getItem(scopedKey(LS_AI_EXPLANATIONS)) || '{}'); }
       catch { return {}; }
     }
 
     function saveAiExplanations(obj) {
-      try { localStorage.setItem(LS_AI_EXPLANATIONS, JSON.stringify(obj || {})); }
+      try { localStorage.setItem(scopedKey(LS_AI_EXPLANATIONS), JSON.stringify(obj || {})); }
       catch { }
     }
 
@@ -2432,15 +2623,15 @@
     const LS_CURRENT = 'qhizhtml_current_profile_v1';
     const LS_JSON_ARCHIVE = 'qhizhtml_json_archive_v1';
     const LS_QMAP_CACHE = 'qhizhtml_qmap_cache_v1';
-    function loadProfiles() { try { return JSON.parse(localStorage.getItem(LS_PROFILES) || '{}'); } catch { return {}; } }
-    function saveProfiles(obj) { localStorage.setItem(LS_PROFILES, JSON.stringify(obj)); }
-    function loadCurrentProfile() { try { return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null'); } catch { return null; } }
-    function saveCurrentProfile(obj) { if (obj) localStorage.setItem(LS_CURRENT, JSON.stringify(obj)); else localStorage.removeItem(LS_CURRENT); }
-    function loadJsonArchive() { try { return JSON.parse(localStorage.getItem(LS_JSON_ARCHIVE) || '{}'); } catch { return {}; } }
+    function loadProfiles() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_PROFILES)) || '{}'); } catch { return {}; } }
+    function saveProfiles(obj) { localStorage.setItem(scopedKey(LS_PROFILES), JSON.stringify(obj)); }
+    function loadCurrentProfile() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_CURRENT)) || 'null'); } catch { return null; } }
+    function saveCurrentProfile(obj) { if (obj) localStorage.setItem(scopedKey(LS_CURRENT), JSON.stringify(obj)); else localStorage.removeItem(scopedKey(LS_CURRENT)); }
+    function loadJsonArchive() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_JSON_ARCHIVE)) || '{}'); } catch { return {}; } }
     function saveJsonArchive(obj) {
       const tryStore = (value) => {
         try {
-          localStorage.setItem(LS_JSON_ARCHIVE, JSON.stringify(value));
+          localStorage.setItem(scopedKey(LS_JSON_ARCHIVE), JSON.stringify(value));
           return true;
         } catch {
           return false;
@@ -2467,13 +2658,13 @@
 
       // Ultimo fallback: svuota archivio persistente.
       try {
-        localStorage.setItem(LS_JSON_ARCHIVE, '{}');
+        localStorage.setItem(scopedKey(LS_JSON_ARCHIVE), '{}');
       } catch { }
       setStatus('Archivio JSON disattivato: spazio browser esaurito.');
       return false;
     }
-    function loadQmapCache() { try { return JSON.parse(localStorage.getItem(LS_QMAP_CACHE) || '{}'); } catch { return {}; } }
-    function saveQmapCache(obj) { try { localStorage.setItem(LS_QMAP_CACHE, JSON.stringify(obj || {})); } catch { } }
+    function loadQmapCache() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_QMAP_CACHE)) || '{}'); } catch { return {}; } }
+    function saveQmapCache(obj) { try { localStorage.setItem(scopedKey(LS_QMAP_CACHE), JSON.stringify(obj || {})); } catch { } }
     function archiveCurrentJson(rawItems, displayName) {
       if (!Array.isArray(rawItems) || !rawItems.length) return;
       const normalized = validateItems(rawItems) || [];
@@ -2629,7 +2820,7 @@
       return names.join('|') || '(all)';
     }
 
-    function usedKey() { return 'qhizhtml_used_v1:' + datasetHash(ALL_ITEMS) + ':' + chaptersSignature(); }
+    function usedKey() { const u=(currentUser&&currentUser.username)?currentUser.username:'anon'; return 'qhizhtml_used_v1:' + u + ':' + datasetHash(ALL_ITEMS) + ':' + chaptersSignature(); }
 
     function getUsedSet() {
       try {
@@ -2649,8 +2840,8 @@
     // ======= Errori persistenti =======
     const LS_WRONG = 'qhizhtml_wrong_v1';
     function wrongDataKey() { return datasetHash(ALL_ITEMS); }
-    function loadWrongRoot() { try { return JSON.parse(localStorage.getItem(LS_WRONG) || '{}'); } catch { return {}; } }
-    function saveWrongRoot(obj) { localStorage.setItem(LS_WRONG, JSON.stringify(obj)); }
+    function loadWrongRoot() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_WRONG)) || '{}'); } catch { return {}; } }
+    function saveWrongRoot(obj) { localStorage.setItem(scopedKey(LS_WRONG), JSON.stringify(obj)); }
     function loadWrongQuestionsForCurrentDataset() {
       const root = loadWrongRoot();
       const list = root[wrongDataKey()] || [];
@@ -3035,8 +3226,8 @@
 
     // ======= Statistiche =======
     const LS_STATS = 'qhizhtml_stats_v1';
-    function loadStats() { try { return JSON.parse(localStorage.getItem(LS_STATS) || '{}'); } catch { return {}; } }
-    function saveStats(obj) { localStorage.setItem(LS_STATS, JSON.stringify(obj)); }
+    function loadStats() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_STATS)) || '{}'); } catch { return {}; } }
+    function saveStats(obj) { localStorage.setItem(scopedKey(LS_STATS), JSON.stringify(obj)); }
 
     function addStat(record) {
       const key = statsKey();
@@ -4674,6 +4865,7 @@
     }
 
     els.fileBtn().addEventListener('click', async () => {
+      if (!ensureAuth()) return;
       if (QUIZ_GIT_MODE) {
         await chooseJsonFromGithubManifest();
         return;
@@ -4744,7 +4936,7 @@
 
     els.urlBtn().addEventListener('click', async () => {
       if (QUIZ_GIT_MODE) {
-        setStatus('In QuizGit usa "Scegli file" per selezionare da GitHub.');
+        setStatus('In Gitconc usa "Scegli file" per selezionare da GitHub.');
         return;
       }
       const url = (els.urlInput().value || '').trim();
@@ -4759,7 +4951,7 @@
 
     els.btnParse().addEventListener('click', async () => {
       if (QUIZ_GIT_MODE) {
-        setStatus('In QuizGit l\'incolla JSON e\' disattivato.');
+        setStatus('In Gitconc l\'incolla JSON e\' disattivato.');
         return;
       }
       try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
@@ -4768,6 +4960,7 @@
 
     // ======= Procedi genera =======
     els.btnGo().addEventListener('click', async () => {
+      if (!ensureAuth()) return;
       if (!ALL_ITEMS.length) { setStatus('Carica prima il JSON (file/URL/incolla).'); return; }
       await generateQuiz();
     });
@@ -4812,6 +5005,20 @@
         if (e.target === profileModal) closeProfileModal();
       });
     }
+
+    const btnAuth = document.getElementById('btn-auth');
+    const btnAuthLogin = document.getElementById('btn-auth-login');
+    const authPassword = document.getElementById('auth-password');
+    if (btnAuth) {
+      btnAuth.addEventListener('click', () => {
+        if (currentUser) logoutAuth();
+        else openAuthModal();
+      });
+    }
+    if (btnAuthLogin) btnAuthLogin.addEventListener('click', async () => { await doLogin(); });
+    if (authPassword) authPassword.addEventListener('keydown', async (e) => {
+      if ((e.key || '') === 'Enter') await doLogin();
+    });
 
     const btnHelp = document.getElementById('btn-help');
     if (btnHelp) btnHelp.addEventListener('click', () => openHelpModal());
@@ -5135,6 +5342,7 @@
         }
       ]);
     });
+    restoreAuthFromSession();
     currentMode = 'base';
     if (QUIZ_GIT_MODE) {
       const fileBtn = els.fileBtn();
@@ -5147,7 +5355,7 @@
       if (urlField) urlField.classList.add('hidden');
       const pasteField = els.btnParse() ? els.btnParse().closest('.field') : null;
       if (pasteField) pasteField.classList.add('hidden');
-      setStatus('QuizGit pronto: scegli il dataset JSON da GitHub.');
+      setStatus('Gitconc pronto: esegui login e scegli il dataset JSON da GitHub.');
     }
     setPercentEnabled(false);
     updateTopDateTime();

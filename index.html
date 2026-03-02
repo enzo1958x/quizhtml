@@ -1527,7 +1527,7 @@
       #source-panel, #filters-panel { border-radius: 14px; }
       .hero { margin: .45rem 0 .7rem; padding: 0; }
       .hero-badge { font-size: clamp(1.55rem, 8.2vw, 2.2rem); }
-      #hero-json-name { font-size: .95rem !important; }
+      #hero-json-name { font-size: 1.25rem !important; }
       .field input[type="number"],
       select,
       input[type="text"],
@@ -1622,7 +1622,7 @@
   <main class="wrap">
     <section class="hero">
       <div id="hero-badge" class="hero-badge">Questionario</div>
-      <div id="hero-json-name" class="muted" style="font-size:1.35rem;font-weight:800;text-align:center;width:100%;"></div>
+      <div id="hero-json-name" class="muted" style="display:none;font-size:2rem;font-weight:800;text-align:center;width:100%;"></div>
     </section>
     <section class="panel" id="source-panel">
       <div class="row source-top-actions">
@@ -1718,7 +1718,7 @@
     <section class="panel hidden" id="stats-panel" style="margin-top:.8rem">
       <div class="row" style="align-items:center;">
         <div class="field" style="flex:1 1 100%">
-          <label>Statistiche per <strong id="stats-json-name">JSON · Questionario</strong></label>
+          <label>Statistiche per <strong id="stats-json-name">Questionario</strong></label>
           <div id="stats-body-main" class="muted" style="margin-top:.3rem;">Nessuna statistica salvata.</div>
         </div>
       </div>
@@ -1920,7 +1920,7 @@
     let lastTick = null;
     let timerInterval = null;
     let elapsedSeconds = 0;
-    let currentJsonName = 'JSON';
+    let currentJsonName = '';
     let currentJsonSource = { type: 'none' }; // none | file | url | paste
     let currentPdfObjectUrl = null;
     const QUIZ_GIT_MODE = true;
@@ -2691,7 +2691,10 @@
       const el = document.getElementById('hero-json-name');
       if (!el) return;
       const base = getJsonBaseName(nameLike || currentJsonName || '');
-      el.textContent = base || '';
+      const srcType = String((currentJsonSource && currentJsonSource.type) || 'none');
+      const show = !!base && base.toLowerCase() !== 'json' && srcType !== 'none';
+      el.textContent = show ? base : '';
+      el.style.display = show ? 'block' : 'none';
     }
     function popupInfo(msg) {
       setStatus(msg);
@@ -3417,7 +3420,7 @@
       const bodyMain = document.getElementById('stats-body-main');
       if (!bodyMain) return;
       const jsonNameEl = document.getElementById('stats-json-name');
-      if (jsonNameEl) jsonNameEl.textContent = (currentJsonName || 'JSON') + ' · ' + activeModeLabel();
+      if (jsonNameEl) jsonNameEl.textContent = (currentJsonName ? (currentJsonName + ' · ' + activeModeLabel()) : activeModeLabel());
       if (!list.length) {
         if (bodyMain) bodyMain.textContent = 'Nessuna statistica salvata.';
         return;
@@ -3631,7 +3634,7 @@
       CURRENT_ITEMS = [];
       CURRENT_DISPLAYED = [];
       currentMode = 'base';
-      currentJsonName = 'JSON';
+      currentJsonName = '';
       updateHeroJsonName(currentJsonName);
       currentJsonSource = { type: 'none' };
       clearPdfLinkState();

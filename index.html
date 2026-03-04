@@ -5031,7 +5031,6 @@
 
     function correctAll(force = false) {
       if (!CURRENT_DISPLAYED.length) { setStatus('Nessuna domanda da correggere.'); return; }
-      setStatus('Correzione in corso...');
       stopTimer();
       let ok = 0;
       const wrongByChapter = new Map();
@@ -5047,7 +5046,7 @@
 
           const sel = card.querySelector(`input:checked`);
           const correctAnswer = card.querySelector(`input[correct="true"]`);
-          const okLab = correctAnswer ? correctAnswer.closest('label') : null;
+          const okLab = correctAnswer.closest('label');
 
           let okAnsTxt = '';
           it.choices.forEach((c, i) => {
@@ -5157,7 +5156,6 @@
       els.list().querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
       activatePdfButtonsInContainer(els.list());
       els.btnCorrect().disabled = true;
-      try { renderStats(); } catch {}
       window.scrollTo(0, document.body.scrollHeight);
     }
 

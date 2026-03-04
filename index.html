@@ -2,12 +2,11 @@
 <html lang="it"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AlgoTeam 2026</title>
+  <title>qhizhtml</title>
   <style>
     :root {
       --bg: #f7f4ed;
       --fg: #101114;
-      --logo-bg-url: url('images/logo.jpg');
       --muted: #5f6b7a;
       --accent: #0f766e;
       --ok: #11875d;
@@ -40,7 +39,7 @@
       content: "";
       position: fixed;
       inset: 0;
-      background: var(--logo-bg-url) center center / cover no-repeat;
+      background: url('images/logo.jpg') center center / cover no-repeat;
       opacity: 0.12;
       z-index: -2;
       pointer-events: none;
@@ -86,19 +85,11 @@
     }
 
     .top {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 1rem;
-      position: relative;
-    }
-
-    .top-meta {
       display: flex;
       align-items: center;
-      gap: .55rem;
-      min-width: 0;
-      justify-self: start;
+      gap: 1rem;
+      justify-content: space-between;
+      position: relative;
     }
 
     .top-datetime {
@@ -119,32 +110,30 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: .45rem;
-      margin-left: 0;
-      background: transparent;
-      border: 0;
-      border-radius: 0;
-      padding: 0;
-      box-shadow: none;
-      justify-self: center;
+      gap: .75rem;
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #d9d1c4;
+      border-radius: 12px;
+      padding: .35rem .65rem;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
     }
 
     .logo {
-      width: auto;
-      height: auto;
-      border-radius: 0;
-      background: none;
-      display: inline-block;
-      color: #111827;
-      font-size: 2rem;
-      line-height: 1;
-      font-weight: 900;
-      box-shadow: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: conic-gradient(from 210deg, #0ea5a4, #22c55e, #0ea5a4);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .08)
     }
 
     h1 {
       font-family: "Verdana", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-      font-size: clamp(.95rem, 1.9vw, 1.25rem);
+      font-size: clamp(1.2rem, 2.6vw, 1.8rem);
       margin: 0;
       letter-spacing: .2px
     }
@@ -500,12 +489,17 @@
       border: 1px solid #d9d1c4;
     }
 
+    .btn.exam-on {
+      background: linear-gradient(180deg, #f59e0b, #d97706);
+      color: #fff;
+      border: 1px solid #b45309;
+    }
+
     .top-actions {
       display: flex;
       gap: .55rem;
       align-items: center;
-      margin-left: 0;
-      justify-self: end;
+      margin-left: .8rem;
     }
 
     .top-actions .btn {
@@ -1169,6 +1163,56 @@
       display: flex;
     }
 
+    #exam-check-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      background: rgba(8, 14, 24, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      backdrop-filter: blur(4px);
+    }
+
+    #exam-check-modal .modal-card {
+      width: min(540px, 95vw);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fffdf8 0%, #fff7ec 100%);
+      border: 1px solid #f1d6ad;
+      box-shadow: 0 22px 48px rgba(15, 23, 42, .28);
+      padding: 1rem 1.1rem;
+      display: grid;
+      gap: .8rem;
+      text-align: center;
+    }
+
+    #exam-check-modal .modal-title {
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: #9a3412;
+      letter-spacing: .01em;
+    }
+
+    #exam-check-text {
+      color: #374151;
+      line-height: 1.45;
+      font-size: 1.02rem;
+    }
+
+    #exam-check-modal .modal-actions {
+      justify-content: center;
+      display: flex;
+    }
+
+    #exam-check-modal.hidden {
+      display: none !important;
+    }
+
+    #exam-check-modal:not(.hidden) {
+      display: flex;
+    }
+
     .q {
       border: 1px solid #e4d7df;
       border-radius: 12px;
@@ -1430,208 +1474,19 @@
       margin-left: .5rem;
       vertical-align: middle;
     }
-
-
-    body.auth-locked header {
-      filter: blur(2px);
-      pointer-events: none;
-      user-select: none;
-    }
-
-    body.auth-locked main > *:not(#auth-modal) {
-      filter: blur(2px);
-      pointer-events: none;
-      user-select: none;
-    }
-
-    #auth-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 30;
-      display: grid;
-      place-items: center;
-      background: rgba(15, 23, 42, .35);
-      backdrop-filter: blur(3px);
-    }
-
-    #auth-modal.hidden { display: none; }
-
-    #auth-modal .modal-card {
-      width: min(460px, 92vw);
-      border-radius: 16px;
-      background: #fffaf2;
-      border: 1px solid #e6dfd2;
-      box-shadow: 0 22px 48px rgba(15, 23, 42, .22);
-      padding: 1rem;
-      display: grid;
-      gap: .75rem;
-    }
-
-    #auth-error { color: #b42318; font-weight: 700; min-height: 1.2em; }
-
-
-
-    /* ===== Responsive Improvements ===== */
-    @media (max-width: 1024px) {
-      .wrap { padding: .85rem .85rem; }
-      .top { gap: .6rem; }
-      .top-datetime { font-size: 15px; padding: .35rem .55rem; }
-      .top-actions .btn { width: 118px; height: 46px; min-height: 46px; font-size: 15px; }
-      .badge.flex { min-width: 0; }
-    }
-
-    @media (max-width: 820px) {
-      .top {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .brand {
-        order: 1;
-        margin-left: 0;
-        width: 100%;
-      }
-      .top-meta {
-        order: 2;
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .top-datetime {
-        order: 2;
-        text-align: center;
-      }
-      .top-actions {
-        order: 3;
-        margin-left: 0;
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .top-actions .btn {
-        flex: 1 1 140px;
-        max-width: 180px;
-      }
-      #source-panel .field-narrow > .row {
-        flex-wrap: wrap;
-      }
-      #source-panel .source-top-actions .btn {
-        width: 100%;
-      }
-      #source-panel .source-top-actions .field {
-        grid-template-rows: auto auto auto;
-      }
-      .timer {
-        grid-template-columns: 1fr;
-        top: 0;
-      }
-      .timer-display {
-        flex-wrap: wrap;
-        gap: .4rem .8rem;
-      }
-      .timer-display .time {
-        min-width: 0;
-        text-align: left;
-      }
-      .btn-fs {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 640px) {
-      body { font-size: 14px; }
-      .panel { padding: .75rem; border-radius: 14px; }
-      #source-panel, #filters-panel { border-radius: 14px; }
-      .hero { margin: .45rem 0 .7rem; padding: 0; }
-      .hero-badge { font-size: clamp(1.55rem, 8.2vw, 2.2rem); }
-      #hero-json-name { font-size: 1.25rem !important; }
-      .field input[type="number"],
-      select,
-      input[type="text"],
-      textarea { font-size: 16px; }
-      .btn,
-      .btn-lg,
-      #btn-go.btn-lg {
-        width: 100%;
-        min-width: 0;
-      }
-      .badge {
-        max-width: 100%;
-      }
-      .badge.flex {
-        min-width: 0;
-      }
-      .profiles {
-        gap: .5rem;
-      }
-      .chapters-wrap {
-        max-height: 46vh;
-      }
-      .chapters {
-        grid-template-columns: 1fr;
-        grid-auto-rows: auto;
-      }
-      .chapters label {
-        align-items: flex-start;
-        flex-wrap: wrap;
-      }
-      #status {
-        font-size: 13px;
-      }
-      #status-text {
-        word-break: break-word;
-      }
-      #results-modal .modal-card,
-      #choice-modal .modal-card,
-      #profile-modal .modal-card,
-      #easter-modal .modal-card,
-      #help-modal .modal-card,
-      #ai-modal .modal-card,
-      #auth-modal .modal-card {
-        width: 96vw;
-        max-height: 88vh;
-        overflow: auto;
-        padding: .85rem;
-      }
-    }
-
-    @media (max-width: 560px) {
-      #source-panel .field-narrow > .row {
-        flex-direction: column;
-        align-items: stretch !important;
-      }
-      #source-panel .field-wide textarea {
-        min-height: 150px;
-      }
-      .timer-display {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-      .timer-display .elapsed,
-      .timer-display .answered,
-      .timer-display .time {
-        font-size: 15px;
-        line-height: 1.25;
-      }
-    }
-
   </style>
 </head>
 
-<body class="auth-locked">
+<body>
   <header>
     <div class="wrap">
       <div class="top">
-        <div class="top-meta">
-          <div id="top-datetime" class="top-datetime">23/02/2026, 06:29:43</div>
-          <span id="auth-user-label" class="badge">Utente: —</span>
-        </div>
+        <div id="top-datetime" class="top-datetime">23/02/2026, 06:29:43</div>
         <div class="brand">
-          <div class="logo">©</div>
-          <h1>AlgoTeam 2026</h1>
+          <div class="logo">Q</div>
+          <h1>qhizhtml</h1>
         </div>
         <div class="top-actions">
-          <button id="btn-auth" class="btn btn-ghost" type="button">Login</button>
           <button id="btn-help" class="btn btn-ghost" type="button">Help</button>
         </div>
       </div>
@@ -1641,7 +1496,8 @@
   <main class="wrap">
     <section class="hero">
       <div id="hero-badge" class="hero-badge">Questionario</div>
-      <div id="hero-json-name" class="muted" style="display:none;font-size:2rem;font-weight:800;text-align:center;width:100%;"></div>
+      <h2>Configura il test in pochi secondi</h2>
+      <p>Carica il JSON, scegli gli ambiti e distribuisci le domande con precisione.</p>
     </section>
     <section class="panel" id="source-panel">
       <div class="row source-top-actions">
@@ -1737,7 +1593,7 @@
     <section class="panel hidden" id="stats-panel" style="margin-top:.8rem">
       <div class="row" style="align-items:center;">
         <div class="field" style="flex:1 1 100%">
-          <label>Statistiche per <strong id="stats-json-name">Questionario</strong></label>
+          <label>Statistiche per <strong id="stats-json-name">JSON · Questionario</strong></label>
           <div id="stats-body-main" class="muted" style="margin-top:.3rem;">Nessuna statistica salvata.</div>
         </div>
       </div>
@@ -1853,29 +1709,19 @@
       </div>
     </div>
 
-
-
-    <div id="auth-modal" class="hidden">
+    <div id="exam-check-modal" class="hidden">
       <div class="modal-card">
-        <div class="modal-title">Accesso Utente</div>
-        <div class="muted">Login da <code>files/users.json</code>. I dati (statistiche/errori/profili) sono separati per utente.</div>
-        <div class="field">
-          <label for="auth-username">Username</label>
-          <input id="auth-username" type="text" autocomplete="username" placeholder="utente">
-        </div>
-        <div class="field">
-          <label for="auth-password">Password</label>
-          <input id="auth-password" type="password" autocomplete="current-password" placeholder="password">
-        </div>
-        <div id="auth-error"></div>
+        <div class="modal-title">Modalità Esame</div>
+        <div id="exam-check-text">Conferma presenza per continuare il questionario.</div>
         <div class="modal-actions">
-          <button id="btn-auth-login" class="btn">Login</button>
+          <button id="exam-check-ok" class="btn" type="button">OK, continua</button>
         </div>
       </div>
     </div>
 
     <div class="row center" id="proceed-row" style="margin:1rem 0;">
       <button id="btn-go" class="btn btn-lg"><i>▶</i> Procedi</button>
+      <button id="btn-exam-mode" class="btn btn-ghost" type="button">Modalità esame: OFF</button>
     </div>
 
     <section class="hidden" id="quiz-panel">
@@ -1908,7 +1754,7 @@
     <footer>
       <div id="status" class="status" style="margin-top:.6rem">
         <span class="pill">Stato</span>
-        <span id="status-text">Scegli un JSON da GitHub, verifica filtri, poi premi “Procedi”.</span>
+        <span id="status-text">Carica un JSON, verifica filtri, poi premi “Procedi”.</span>
       </div>
     </footer>
   </main>
@@ -1919,184 +1765,27 @@
       if (st) st.textContent = 'Errore JS: ' + e.message;
     });
 
-    function setBackgroundLogoWithFallback() {
-      const testCandidates = ['images/logo.jpg', 'files/images/logo.jpg'];
-      const tryIndex = (idx) => {
-        if (idx >= testCandidates.length) return;
-        const img = new Image();
-        img.onload = () => {
-          document.documentElement.style.setProperty('--logo-bg-url', `url('${testCandidates[idx]}')`);
-        };
-        img.onerror = () => tryIndex(idx + 1);
-        img.src = testCandidates[idx] + `?v=${Date.now()}`;
-      };
-      tryIndex(0);
-    }
-
     let RAW_ITEMS = []; let ALL_ITEMS = []; let CURRENT_ITEMS = []; let CURRENT_DISPLAYED = [];
     let currentMode = 'base'; // base | wrong
     let statsVisibility = { base: false, wrong: false };
     let lastTick = null;
     let timerInterval = null;
     let elapsedSeconds = 0;
-    let currentJsonName = '';
+    let examModeEnabled = false;
+    let examCorrectionUnlocked = true;
+    let examNextPopupAt = 120;
+    let examPopupOpen = false;
+    let currentJsonName = 'JSON';
     let currentJsonSource = { type: 'none' }; // none | file | url | paste
     let currentPdfObjectUrl = null;
-    const QUIZ_GIT_MODE = true;
-    const QUIZ_GIT_BASE = (() => {
-      try {
-        return new URL('./files/JSON', window.location.href).href.replace(/\/+$/, '');
-      } catch {
-        return '/files/JSON';
-      }
-    })();
-    const QUIZ_GIT_MANIFEST_CANDIDATES = [
-      `${QUIZ_GIT_BASE}/manifest_full.json`,
-      `${QUIZ_GIT_BASE}/manifest.json`
-    ];
-    let QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
-    const USERS_JSON_CANDIDATES = [
-      (() => { try { return new URL('./files/users.json', window.location.href).href; } catch { return '/files/users.json'; } })(),
-      (() => { try { return new URL('./users.json', window.location.href).href; } catch { return '/users.json'; } })()
-    ];
-    const SS_AUTH_USER = 'gitconc_auth_user_v1';
-    let currentUser = null;
     const LS_OPENAI_KEY = 'qhizhtml_openai_api_key_v1';
     const LS_AI_EXPLANATIONS = 'qhizhtml_ai_explanations_v1';
-
-    function scopedKey(base) {
-      const u = (currentUser && currentUser.username) ? currentUser.username : 'anon';
-      return `${String(base || '').trim()}::${u}`;
-    }
-
-    function setAuthError(msg) {
-      const el = document.getElementById('auth-error');
-      if (el) el.textContent = String(msg || '');
-    }
-
-    function updateAuthUi() {
-      const label = document.getElementById('auth-user-label');
-      if (label) label.textContent = currentUser ? `Utente: ${currentUser.username}` : 'Utente: —';
-      const btn = document.getElementById('btn-auth');
-      if (btn) btn.textContent = currentUser ? 'Logout' : 'Login';
-    }
-
-    function openAuthModal() {
-      const m = document.getElementById('auth-modal');
-      if (m) m.classList.remove('hidden');
-      setAuthError('');
-      const u = document.getElementById('auth-username');
-      if (u) u.focus();
-    }
-
-    function closeAuthModal() {
-      const m = document.getElementById('auth-modal');
-      if (m) m.classList.add('hidden');
-    }
-
-    async function fetchUsersForAuth() {
-      let lastErr = null;
-      for (const url of USERS_JSON_CANDIDATES) {
-        try {
-          const res = await fetch(url, { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
-          const src = Array.isArray(data) ? data : (Array.isArray(data.users) ? data.users : data.users || []);
-          const list = [];
-          if (Array.isArray(src)) {
-            src.forEach((u) => {
-              if (!u || typeof u !== 'object') return;
-              const username = String(u.username || u.user || '').trim();
-              const password = String(u.password || u.pass || '').trim();
-              if (username && password) list.push({ username, password });
-            });
-          } else if (src && typeof src === 'object') {
-            Object.entries(src).forEach(([k, v]) => {
-              const username = String(k || '').trim();
-              const password = String(v || '').trim();
-              if (username && password) list.push({ username, password });
-            });
-          }
-          if (list.length) return list;
-          lastErr = new Error('users.json senza utenti validi.');
-        } catch (e) {
-          lastErr = e;
-        }
-      }
-      throw lastErr || new Error('users.json non disponibile.');
-    }
-
-    async function doLogin() {
-      const uEl = document.getElementById('auth-username');
-      const pEl = document.getElementById('auth-password');
-      const username = String((uEl && uEl.value) || '').trim();
-      const password = String((pEl && pEl.value) || '').trim();
-      if (!username || !password) {
-        setAuthError('Inserisci username e password.');
-        return false;
-      }
-      try {
-        const users = await fetchUsersForAuth();
-        const found = users.find((x) => String(x.username) === username && String(x.password) === password);
-        if (!found) {
-          setAuthError('Credenziali non valide.');
-          return false;
-        }
-        currentUser = { username: found.username };
-        try { sessionStorage.setItem(SS_AUTH_USER, found.username); } catch { }
-        document.body.classList.remove('auth-locked');
-        closeAuthModal();
-        updateAuthUi();
-        currentProfile = loadCurrentProfile();
-        refreshProfileUI();
-        renderStats();
-        setStatus(`Login eseguito: ${found.username}.`);
-        return true;
-      } catch (e) {
-        setAuthError('Autenticazione non disponibile: ' + (e?.message || e));
-        return false;
-      }
-    }
-
-    function logoutAuth() {
-      currentUser = null;
-      try { sessionStorage.removeItem(SS_AUTH_USER); } catch { }
-      resetLoadedDatasetState('Logout eseguito. Stato reset: effettua di nuovo il login.');
-      document.body.classList.add('auth-locked');
-      updateAuthUi();
-      openAuthModal();
-    }
-
-    function ensureAuth() {
-      if (currentUser && currentUser.username) return true;
-      document.body.classList.add('auth-locked');
-      openAuthModal();
-      setStatus('Effettua login per continuare.');
-      return false;
-    }
-
-    function restoreAuthFromSession() {
-      try {
-        const u = String(sessionStorage.getItem(SS_AUTH_USER) || '').trim();
-        if (u) currentUser = { username: u };
-      } catch { }
-      updateAuthUi();
-      if (currentUser) {
-        document.body.classList.remove('auth-locked');
-        closeAuthModal();
-        currentProfile = loadCurrentProfile();
-        refreshProfileUI();
-      } else {
-        document.body.classList.add('auth-locked');
-        openAuthModal();
-      }
-    }
 
     const HELP_TEXT = (
       "QuizApp Crypto AI v2\n" +
       "Guida rapida alle funzioni principali\n\n" +
       "1) Caricamento dati\n" +
-      "- Scegli file: apre la lista JSON da GitHub (manifest remoto).\n" +
+      "- Scegli file: apre un JSON locale con le domande.\n" +
       "- Carica URL: scarica un JSON da un link web.\n" +
       "- Usa JSON: incolla direttamente il contenuto JSON.\n" +
       "Dopo il caricamento, l'app prepara capitoli, statistiche e controlli quiz.\n\n" +
@@ -2191,6 +1880,7 @@
       paste: () => document.getElementById('paste'),
       btnParse: () => document.getElementById('btn-parse'),
       btnGo: () => document.getElementById('btn-go'),
+      btnExamMode: () => document.getElementById('btn-exam-mode'),
       btnProfile: () => document.getElementById('btn-profile'),
       profileCurrent: () => document.getElementById('profile-current'),
       btnToggleMode: () => document.getElementById('btn-toggle-mode'),
@@ -2406,7 +2096,7 @@
 
     function resolveOpenAiApiKey() {
       try {
-        return String(localStorage.getItem(scopedKey(LS_OPENAI_KEY)) || '').trim();
+        return String(localStorage.getItem(LS_OPENAI_KEY) || '').trim();
       } catch {
         return '';
       }
@@ -2419,10 +2109,10 @@
       const clean = String(value || '').trim();
       try {
         if (clean) {
-          localStorage.setItem(scopedKey(LS_OPENAI_KEY), clean);
+          localStorage.setItem(LS_OPENAI_KEY, clean);
           setStatus('OPENAI_API_KEY salvata.');
         } else {
-          localStorage.removeItem(scopedKey(LS_OPENAI_KEY));
+          localStorage.removeItem(LS_OPENAI_KEY);
           setStatus('OPENAI_API_KEY rimossa.');
         }
       } catch (e) {
@@ -2435,12 +2125,12 @@
     }
 
     function loadAiExplanations() {
-      try { return JSON.parse(localStorage.getItem(scopedKey(LS_AI_EXPLANATIONS)) || '{}'); }
+      try { return JSON.parse(localStorage.getItem(LS_AI_EXPLANATIONS) || '{}'); }
       catch { return {}; }
     }
 
     function saveAiExplanations(obj) {
-      try { localStorage.setItem(scopedKey(LS_AI_EXPLANATIONS), JSON.stringify(obj || {})); }
+      try { localStorage.setItem(LS_AI_EXPLANATIONS, JSON.stringify(obj || {})); }
       catch { }
     }
 
@@ -2706,15 +2396,37 @@
     }
 
     function setStatus(msg) { els.statusText().textContent = msg; }
-    function updateHeroJsonName(nameLike) {
-      const el = document.getElementById('hero-json-name');
-      if (!el) return;
-      const base = getJsonBaseName(nameLike || currentJsonName || '');
-      const srcType = String((currentJsonSource && currentJsonSource.type) || 'none');
-      const show = !!base && base.toLowerCase() !== 'json' && srcType !== 'none';
-      el.textContent = show ? base : '';
-      el.style.display = show ? 'block' : 'none';
+
+    function updateExamModeButtonUI() {
+      const b = els.btnExamMode ? els.btnExamMode() : document.getElementById('btn-exam-mode');
+      if (!b) return;
+      b.textContent = examModeEnabled ? 'Modalità esame: ON' : 'Modalità esame: OFF';
+      b.classList.toggle('exam-on', !!examModeEnabled);
     }
+
+    function toggleExamMode() {
+      examModeEnabled = !examModeEnabled;
+      updateExamModeButtonUI();
+      setStatus(examModeEnabled
+        ? 'Modalità esame attiva: popup ogni 2 minuti, "Correggi tutto" dopo 15 minuti.'
+        : 'Modalità esame disattivata.');
+    }
+
+    function openExamCheckModal() {
+      const modal = document.getElementById('exam-check-modal');
+      if (!modal || examPopupOpen) return;
+      examPopupOpen = true;
+      modal.classList.remove('hidden');
+      const ok = document.getElementById('exam-check-ok');
+      if (ok) ok.focus();
+    }
+
+    function closeExamCheckModal() {
+      const modal = document.getElementById('exam-check-modal');
+      if (modal) modal.classList.add('hidden');
+      examPopupOpen = false;
+    }
+
     function popupInfo(msg) {
       setStatus(msg);
       window.alert(msg);
@@ -2811,15 +2523,15 @@
     const LS_CURRENT = 'qhizhtml_current_profile_v1';
     const LS_JSON_ARCHIVE = 'qhizhtml_json_archive_v1';
     const LS_QMAP_CACHE = 'qhizhtml_qmap_cache_v1';
-    function loadProfiles() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_PROFILES)) || '{}'); } catch { return {}; } }
-    function saveProfiles(obj) { localStorage.setItem(scopedKey(LS_PROFILES), JSON.stringify(obj)); }
-    function loadCurrentProfile() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_CURRENT)) || 'null'); } catch { return null; } }
-    function saveCurrentProfile(obj) { if (obj) localStorage.setItem(scopedKey(LS_CURRENT), JSON.stringify(obj)); else localStorage.removeItem(scopedKey(LS_CURRENT)); }
-    function loadJsonArchive() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_JSON_ARCHIVE)) || '{}'); } catch { return {}; } }
+    function loadProfiles() { try { return JSON.parse(localStorage.getItem(LS_PROFILES) || '{}'); } catch { return {}; } }
+    function saveProfiles(obj) { localStorage.setItem(LS_PROFILES, JSON.stringify(obj)); }
+    function loadCurrentProfile() { try { return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null'); } catch { return null; } }
+    function saveCurrentProfile(obj) { if (obj) localStorage.setItem(LS_CURRENT, JSON.stringify(obj)); else localStorage.removeItem(LS_CURRENT); }
+    function loadJsonArchive() { try { return JSON.parse(localStorage.getItem(LS_JSON_ARCHIVE) || '{}'); } catch { return {}; } }
     function saveJsonArchive(obj) {
       const tryStore = (value) => {
         try {
-          localStorage.setItem(scopedKey(LS_JSON_ARCHIVE), JSON.stringify(value));
+          localStorage.setItem(LS_JSON_ARCHIVE, JSON.stringify(value));
           return true;
         } catch {
           return false;
@@ -2846,13 +2558,13 @@
 
       // Ultimo fallback: svuota archivio persistente.
       try {
-        localStorage.setItem(scopedKey(LS_JSON_ARCHIVE), '{}');
+        localStorage.setItem(LS_JSON_ARCHIVE, '{}');
       } catch { }
       setStatus('Archivio JSON disattivato: spazio browser esaurito.');
       return false;
     }
-    function loadQmapCache() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_QMAP_CACHE)) || '{}'); } catch { return {}; } }
-    function saveQmapCache(obj) { try { localStorage.setItem(scopedKey(LS_QMAP_CACHE), JSON.stringify(obj || {})); } catch { } }
+    function loadQmapCache() { try { return JSON.parse(localStorage.getItem(LS_QMAP_CACHE) || '{}'); } catch { return {}; } }
+    function saveQmapCache(obj) { try { localStorage.setItem(LS_QMAP_CACHE, JSON.stringify(obj || {})); } catch { } }
     function archiveCurrentJson(rawItems, displayName) {
       if (!Array.isArray(rawItems) || !rawItems.length) return;
       const normalized = validateItems(rawItems) || [];
@@ -3008,7 +2720,7 @@
       return names.join('|') || '(all)';
     }
 
-    function usedKey() { const u=(currentUser&&currentUser.username)?currentUser.username:'anon'; return 'qhizhtml_used_v1:' + u + ':' + datasetHash(ALL_ITEMS) + ':' + chaptersSignature(); }
+    function usedKey() { return 'qhizhtml_used_v1:' + datasetHash(ALL_ITEMS) + ':' + chaptersSignature(); }
 
     function getUsedSet() {
       try {
@@ -3028,8 +2740,8 @@
     // ======= Errori persistenti =======
     const LS_WRONG = 'qhizhtml_wrong_v1';
     function wrongDataKey() { return datasetHash(ALL_ITEMS); }
-    function loadWrongRoot() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_WRONG)) || '{}'); } catch { return {}; } }
-    function saveWrongRoot(obj) { localStorage.setItem(scopedKey(LS_WRONG), JSON.stringify(obj)); }
+    function loadWrongRoot() { try { return JSON.parse(localStorage.getItem(LS_WRONG) || '{}'); } catch { return {}; } }
+    function saveWrongRoot(obj) { localStorage.setItem(LS_WRONG, JSON.stringify(obj)); }
     function loadWrongQuestionsForCurrentDataset() {
       const root = loadWrongRoot();
       const list = root[wrongDataKey()] || [];
@@ -3211,7 +2923,14 @@
       const el = document.getElementById('timer-answered');
       if (el) el.textContent = `Risposte ${answered}/${total}`;
       const btn = els.btnCorrect();
-      if (btn) btn.disabled = !(total > 0 && answered === total);
+      if (btn) {
+        const answersReady = (total > 0 && answered === total);
+        const examReady = (!examModeEnabled || examCorrectionUnlocked);
+        btn.disabled = !(answersReady && examReady);
+        btn.title = (examModeEnabled && !examCorrectionUnlocked)
+          ? 'Disponibile dopo 15 minuti in Modalità esame'
+          : '';
+      }
     }
 
     function startTimer(secondsTotal) {
@@ -3226,6 +2945,8 @@
       let remaining = secondsTotal;
       let elapsed = 0;
       elapsedSeconds = 0;
+      examCorrectionUnlocked = !examModeEnabled;
+      examNextPopupAt = 120;
       const render = () => {
         const min = Math.floor(remaining / 60);
         const sec = remaining % 60;
@@ -3237,10 +2958,24 @@
         fill.style.width = pct + '%';
       };
       render();
+      updateAnswerProgress();
       timerInterval = setInterval(() => {
         remaining = !isSelectMaxEnabled() ? Math.max(0, remaining - 1) : remaining;
         elapsed = Math.min(secondsTotal, elapsed + 1);
         elapsedSeconds = elapsed;
+
+        if (examModeEnabled) {
+          if (!examCorrectionUnlocked && elapsed >= 15 * 60) {
+            examCorrectionUnlocked = true;
+            updateAnswerProgress();
+            setStatus('Modalità esame: "Correggi tutto" ora disponibile.');
+          }
+          while (elapsed >= examNextPopupAt && remaining > 0) {
+            if (!examPopupOpen) openExamCheckModal();
+            examNextPopupAt += 120;
+          }
+        }
+
         render();
         if (remaining <= 0) {
           clearInterval(timerInterval);
@@ -3255,6 +2990,7 @@
         clearInterval(timerInterval);
         timerInterval = null;
       }
+      closeExamCheckModal();
     }
 
     function restartQuiz() {
@@ -3279,6 +3015,9 @@
       updateAnswerProgress();
       els.correctRow().style.display = 'none';
       els.btnCorrect().disabled = true;
+      examCorrectionUnlocked = !examModeEnabled;
+      examNextPopupAt = 120;
+      closeExamCheckModal();
       setStatus('Selezioni mantenute. Premi “Procedi” per ripartire.');
       window.scrollTo(0, 0);
     }
@@ -3414,15 +3153,15 @@
 
     // ======= Statistiche =======
     const LS_STATS = 'qhizhtml_stats_v1';
-    function loadStats() { try { return JSON.parse(localStorage.getItem(scopedKey(LS_STATS)) || '{}'); } catch { return {}; } }
-    function saveStats(obj) { localStorage.setItem(scopedKey(LS_STATS), JSON.stringify(obj)); }
+    function loadStats() { try { return JSON.parse(localStorage.getItem(LS_STATS) || '{}'); } catch { return {}; } }
+    function saveStats(obj) { localStorage.setItem(LS_STATS, JSON.stringify(obj)); }
 
     function addStat(record) {
       const key = statsKey();
       const stats = loadStats();
       if (!stats[key]) stats[key] = [];
       stats[key].unshift(record);
-      stats[key] = stats[key];
+      if (stats[key].length > 200) stats[key].length = 200;
       saveStats(stats);
     }
 
@@ -3439,7 +3178,7 @@
       const bodyMain = document.getElementById('stats-body-main');
       if (!bodyMain) return;
       const jsonNameEl = document.getElementById('stats-json-name');
-      if (jsonNameEl) jsonNameEl.textContent = (currentJsonName ? (currentJsonName + ' · ' + activeModeLabel()) : activeModeLabel());
+      if (jsonNameEl) jsonNameEl.textContent = (currentJsonName || 'JSON') + ' · ' + activeModeLabel();
       if (!list.length) {
         if (bodyMain) bodyMain.textContent = 'Nessuna statistica salvata.';
         return;
@@ -3487,20 +3226,9 @@
       return out;
     }
 
-    function decodePathPart(value) {
-      const raw = String(value || '').trim();
-      if (!raw) return '';
-      try {
-        return decodeURIComponent(raw);
-      } catch {
-        return raw;
-      }
-    }
-
     function getJsonBaseName(name) {
       const src = String(name || '').trim();
-      const noQuery = src.split('?')[0].split('#')[0];
-      const plain = decodePathPart(noQuery.split('/').pop().split('\\').pop());
+      const plain = src.split('/').pop().split('\\').pop();
       return plain.replace(/\.json$/i, '').trim();
     }
 
@@ -3519,154 +3247,15 @@
 
     function buildPath(base, name) {
       if (!base) return name;
-      const b = String(base || '').trim();
-      const n = String(name || '').trim();
-      if (!n) return b;
-      if (/^https?:\/\//i.test(n)) return n;
-      if (/^https?:\/\//i.test(b)) {
-        const encoded = n
-          .split('/')
-          .map((seg) => {
-            const raw = String(seg || '').trim();
-            if (!raw) return raw;
-            try {
-              return encodeURIComponent(decodeURIComponent(raw));
-            } catch {
-              return encodeURIComponent(raw);
-            }
-          })
-          .join('/');
-        return b.endsWith('/') ? (b + encoded) : (b + '/' + encoded);
-      }
-      return b.endsWith('/') ? (b + n) : (b + '/' + n);
+      return base.endsWith('/') ? (base + name) : (base + '/' + name);
     }
 
     function basenameOnly(value) {
-      const src = String(value || '').split('?')[0].split('#')[0];
-      return decodePathPart(src.split('/').pop().split('\\').pop().trim());
+      return String(value || '').split('/').pop().split('\\').pop().trim();
     }
 
     function jsonDirCandidates() {
-      if (QUIZ_GIT_MODE) return [QUIZ_GIT_BASE];
       return ['JSON', '../JSON', '../../JSON'];
-    }
-
-    function toGithubRawUrl(urlLike) {
-      const raw = String(urlLike || '').trim();
-      if (!raw) return '';
-      const m = raw.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
-      if (m && m[1]) return `https://drive.google.com/uc?export=download&id=${m[1]}`;
-      return raw;
-    }
-
-    function parseManifestEntries(payload) {
-      const list = [];
-      const pushEntry = (nameRaw, urlRaw, sourceObj = null) => {
-        const name = String(nameRaw || '').trim();
-        const candidateUrl = String(urlRaw || '').trim();
-        if (!candidateUrl) return;
-        const isJson = /\.json(?:[?#].*)?$/i.test(name) || /\.json(?:[?#].*)?$/i.test(candidateUrl);
-        if (!isJson) return;
-        let fullUrl = toGithubRawUrl(candidateUrl);
-        if (!/^https?:\/\//i.test(fullUrl)) {
-          try {
-            fullUrl = new URL(fullUrl.replace(/^\/+/, ''), `${QUIZ_GIT_BASE}/`).href;
-          } catch {
-            return;
-          }
-        }
-        const visible = name || basenameOnly(fullUrl) || 'JSON';
-        const label = visible.replace(/\.json$/i, '').trim();
-        const src = (sourceObj && typeof sourceObj === 'object') ? sourceObj : {};
-        list.push({
-          label,
-          name: (name || basenameOnly(fullUrl) || '').trim(),
-          url: fullUrl,
-          pdf: String(src.pdf || src.pdfName || '').trim(),
-          qmap: String(src.qmap || src.qmapName || '').trim(),
-          xlsx: String(src.xlsx || src.xlsxName || '').trim()
-        });
-      };
-
-      const scan = (node) => {
-        if (!node) return;
-        if (Array.isArray(node)) {
-          node.forEach((it) => {
-            if (typeof it === 'string') {
-              pushEntry(it, it, null);
-              return;
-            }
-            if (it && typeof it === 'object') {
-              const n = it.name || it.file || it.filename || it.title || it.jsonName || it.path || it.json || '';
-              const u = it.url || it.downloadUrl || it.download_url || it.href || it.jsonUrl || it.json || it.path || '';
-              pushEntry(n, u, it);
-            }
-          });
-          return;
-        }
-        if (node && typeof node === 'object') {
-          const arrays = ['files', 'entries', 'items', 'json', 'jsons', 'datasets', 'manifest'];
-          let found = false;
-          arrays.forEach((k) => {
-            if (Array.isArray(node[k])) {
-              found = true;
-              scan(node[k]);
-            }
-          });
-          if (!found) {
-            Object.values(node).forEach((v) => {
-              if (Array.isArray(v)) scan(v);
-            });
-          }
-        }
-      };
-
-      scan(payload);
-      const uniq = new Map();
-      list.forEach((it) => {
-        const key = String(it.url || '').trim();
-        if (key && !uniq.has(key)) uniq.set(key, it);
-      });
-      return Array.from(uniq.values()).sort((a, b) => a.label.localeCompare(b.label, 'it'));
-    }
-
-    async function fetchManifestEntriesFromGithub() {
-      let lastErr = null;
-      for (const url of QUIZ_GIT_MANIFEST_CANDIDATES) {
-        try {
-          const res = await fetch(url, { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const payload = await res.json();
-          const entries = parseManifestEntries(payload);
-          if (entries.length) return { entries, url };
-          lastErr = new Error('Manifest senza voci JSON valide.');
-        } catch (e) {
-          lastErr = e;
-        }
-      }
-      throw lastErr || new Error('Manifest non disponibile.');
-    }
-
-    function resetLoadedDatasetState(msg) {
-      RAW_ITEMS = [];
-      ALL_ITEMS = [];
-      CURRENT_ITEMS = [];
-      CURRENT_DISPLAYED = [];
-      currentMode = 'base';
-      currentJsonName = '';
-      updateHeroJsonName(currentJsonName);
-      currentJsonSource = { type: 'none' };
-      clearPdfLinkState();
-      if (els.list()) els.list().innerHTML = '';
-      if (els.chapters()) els.chapters().innerHTML = '<div class="muted">Caricamento capitoli…</div>';
-      if (els.fileBadge()) {
-        els.fileBadge().textContent = 'Nessun file…';
-        els.fileBadge().title = 'Nessun file selezionato';
-      }
-      if (els.filtersPanel()) els.filtersPanel().classList.add('hidden');
-      refreshModeUI();
-      renderStats();
-      setStatus(msg || 'Nessun dataset caricato.');
     }
 
     function normalizeZipPath(path) {
@@ -4109,8 +3698,6 @@
     }
 
     function mapBaseCandidatesForUrl() {
-      const forced = String((currentJsonSource && currentJsonSource.baseUrl) || '').trim();
-      if (forced) return [forced.replace(/\/+$/, '')];
       const src = String(currentJsonName || '').trim();
       if (!/^https?:\/\//i.test(src)) return [];
       try {
@@ -4360,44 +3947,6 @@
         return;
       }
 
-      const manifestEntry = (currentJsonSource && currentJsonSource.manifestEntry) ? currentJsonSource.manifestEntry : null;
-      const explicitBase = (currentJsonSource && currentJsonSource.baseUrl) ? String(currentJsonSource.baseUrl).replace(/\/+$/, '') : '';
-      if (manifestEntry && explicitBase) {
-        const explicitQmap = String(manifestEntry.qmap || '').trim();
-        const explicitPdf = String(manifestEntry.pdf || '').trim();
-        if (explicitQmap) {
-          const payload = await tryFetchJson(buildPath(explicitBase, explicitQmap));
-          if (payload && typeof payload === 'object') {
-            const chapterToPage = chapterMapFromPayload(payload);
-            if (chapterToPage) {
-              let pdfPath = '';
-              if (explicitPdf) pdfPath = buildPath(explicitBase, explicitPdf);
-              if (!pdfPath) {
-                const pdfNameField = String(payload.pdfName || payload.pdfPath || '').trim();
-                if (pdfNameField) {
-                  pdfPath = /^(https?:)?\/\//i.test(pdfNameField)
-                    ? pdfNameField
-                    : buildPath(explicitBase, basenameOnly(pdfNameField));
-                }
-              }
-              if (!pdfPath) pdfPath = buildPath(explicitBase, `${jsonBase}.pdf`);
-              if (await resourceExists(pdfPath)) {
-                currentPdfLinkCfg = {
-                  baseName: jsonBase,
-                  jsonBase,
-                  pdf: basenameOnly(explicitPdf || pdfPath) || `${jsonBase}.pdf`,
-                  xlsx: `${jsonBase}.xlsx`,
-                  pdfPath,
-                  chapterToPage
-                };
-                lastMappingDiagnostic = `mappa da manifest_full (${explicitQmap})`;
-                return;
-              }
-            }
-          }
-        }
-      }
-
       const mapFileCandidates = Array.from(new Set([
         `${jsonBase}.qmap`,
         `${normStem.replace(/\s+/g, '_')}.qmap`,
@@ -4473,21 +4022,6 @@
       return null;
     }
 
-    function normalizePdfOpenUrl(raw) {
-      const src = String(raw || '').trim();
-      if (!src) return src;
-      try {
-        const u = new URL(src, window.location.href);
-        // Difesa contro doppia codifica (%2520 -> %20)
-        if (u.pathname.includes('%25')) {
-          u.pathname = decodeURIComponent(u.pathname);
-        }
-        return u.toString();
-      } catch {
-        return src.replace(/%2520/g, '%20');
-      }
-    }
-
     function renderWrongPdfChooser(items) {
       // Richiesta utente: nel popup finale non serve più il puntamento PDF.
       const wrap = document.getElementById('rm-pdf-jump');
@@ -4515,7 +4049,7 @@
         return;
       }
       const pdfPath = cfg.pdfPath || cfg.pdf;
-      const url = normalizePdfOpenUrl(`${pdfPath}#page=${picked.page}`);
+      const url = `${encodeURI(pdfPath)}#page=${picked.page}`;
       window.open(url, '_blank');
       setStatus(`Apro ${cfg.pdf} a pagina ${picked.page}.`);
     }
@@ -4561,7 +4095,7 @@
         return;
       }
       const pdfPath = cfg.pdfPath || cfg.pdf;
-      const url = normalizePdfOpenUrl(`${pdfPath}#page=${page}`);
+      const url = `${encodeURI(pdfPath)}#page=${page}`;
       window.open(url, '_blank');
       setStatus(`Apro ${cfg.pdf} a pagina ${page}.`);
     }
@@ -4839,8 +4373,10 @@
       }
 
       els.correctRow().style.display = 'flex';
+      if (examModeEnabled) {
+        setStatus('Modalità esame attiva: popup ogni 2 minuti. "Correggi tutto" abilitato dopo 15 minuti e a risposte complete.');
+      }
 
-      els.btnCorrect().onclick = () => correctAll(false);
       document.getElementById('quiz-panel').classList.remove('hidden');
       updateAnswerProgress();
       startTimer(30 * 60);
@@ -4849,6 +4385,12 @@
 
     function correctAll(force = false) {
       if (!CURRENT_DISPLAYED.length) { setStatus('Nessuna domanda da correggere.'); return; }
+      setStatus('Correzione in corso...');
+      if (examModeEnabled && !examCorrectionUnlocked && !force) {
+        setStatus('Modalità esame: "Correggi tutto" disponibile solo dopo 15 minuti.');
+        return;
+      }
+      closeExamCheckModal();
       stopTimer();
       let ok = 0;
       const wrongByChapter = new Map();
@@ -4856,66 +4398,71 @@
       const solvedItems = [];
       const wrongItemsForPdf = [];
       CURRENT_DISPLAYED.forEach((it, idx) => {
-        const card = els.list().children[idx];
-        if (card) {
-          const res = card.querySelector('.result');
-          const labels = card.querySelectorAll('.choices label');
-          labels.forEach(l => l.classList.remove('correct', 'wrong'));
+        try {
+          const card = els.list().children[idx];
+          if (card) {
+            const res = card.querySelector('.result');
+            const labels = card.querySelectorAll('.choices label');
+            labels.forEach(l => l.classList.remove('correct', 'wrong'));
 
-          const sel = card.querySelector(`input:checked`);
-          const correctAnswer = card.querySelector(`input[correct="true"]`);
-          const okLab = correctAnswer.closest('label');
+            const sel = card.querySelector(`input:checked`);
+            const correctAnswer = card.querySelector(`input[correct="true"]`);
+            const okLab = correctAnswer ? correctAnswer.closest('label') : null;
 
-          let okAnsTxt = '';
-          it.choices.forEach((c, i) => {
-            if (c.indexOf('§§§[OK]') !== -1) {
-              okAnsTxt = c.split('§§§')[0];
-            }
-          });
-
-          if (!sel) {
-            if (okLab) {
-              okLab.classList.add('correct');
-            }
-            res.textContent = force ? 'Tempo scaduto: non risposto.' : 'Nessuna selezione - risposta esatta: ' + okAnsTxt;
-            res.className = 'result err';
-            const ch = String(it.chapter ?? 'Generale');
-            wrongByChapter.set(ch, (wrongByChapter.get(ch) || 0) + 1);
-            const page = chapterPageForCurrentJson(ch);
-            if (page) wrongItemsForPdf.push({ chapter: ch, page, question: it.question || '' });
-            setCardPdfJump(card, ch, true);
-            placeAiButtonInCard(card, it, null);
-            missedItems.push(it);
-          } else {
-            const expBox = card.querySelector('#e' + idx);
-            const chosen = sel.getAttribute("correct");
-            const chosenLab = sel.closest('label');
-            if (chosen === 'true') {
-              ok++;
-              solvedItems.push(it);
-              res.textContent = 'Corretto'; 
-              res.className = 'result ok';
-              chosenLab.classList.add('correct');
-              setCardPdfJump(card, String(it.chapter ?? 'Generale'), currentMode === 'wrong');
-            } else {
-              chosenLab.classList.add('wrong');
-              if (okLab) {
-                okLab.classList.add('correct');
+            let okAnsTxt = '';
+            (it.choices || []).forEach((c) => {
+              if (String(c).indexOf('§§§[OK]') !== -1) {
+                okAnsTxt = String(c).split('§§§')[0];
               }
-              res.className = 'result err';
-              res.textContent = 'Risposta esatta: ' + okAnsTxt;
+            });
+
+            if (!sel) {
+              if (okLab) okLab.classList.add('correct');
+              if (res) {
+                res.textContent = force ? 'Tempo scaduto: non risposto.' : 'Nessuna selezione - risposta esatta: ' + okAnsTxt;
+                res.className = 'result err';
+              }
               const ch = String(it.chapter ?? 'Generale');
               wrongByChapter.set(ch, (wrongByChapter.get(ch) || 0) + 1);
               const page = chapterPageForCurrentJson(ch);
               if (page) wrongItemsForPdf.push({ chapter: ch, page, question: it.question || '' });
               setCardPdfJump(card, ch, true);
-              const selectedIdx = (typeof sel.value === 'string')
-                ? (it.choices || []).findIndex(c => String(c) === String(sel.value))
-                : null;
-              placeAiButtonInCard(card, it, selectedIdx >= 0 ? selectedIdx : null);
+              placeAiButtonInCard(card, it, null);
               missedItems.push(it);
+            } else {
+              const chosen = sel.getAttribute("correct");
+              const chosenLab = sel.closest('label');
+              if (chosen === 'true') {
+                ok++;
+                solvedItems.push(it);
+                if (res) {
+                  res.textContent = 'Corretto';
+                  res.className = 'result ok';
+                }
+                if (chosenLab) chosenLab.classList.add('correct');
+                setCardPdfJump(card, String(it.chapter ?? 'Generale'), currentMode === 'wrong');
+              } else {
+                if (chosenLab) chosenLab.classList.add('wrong');
+                if (okLab) okLab.classList.add('correct');
+                if (res) {
+                  res.className = 'result err';
+                  res.textContent = 'Risposta esatta: ' + okAnsTxt;
+                }
+                const ch = String(it.chapter ?? 'Generale');
+                wrongByChapter.set(ch, (wrongByChapter.get(ch) || 0) + 1);
+                const page = chapterPageForCurrentJson(ch);
+                if (page) wrongItemsForPdf.push({ chapter: ch, page, question: it.question || '' });
+                setCardPdfJump(card, ch, true);
+                const selectedIdx = (typeof sel.value === 'string')
+                  ? (it.choices || []).findIndex(c => String(c) === String(sel.value))
+                  : null;
+                placeAiButtonInCard(card, it, selectedIdx >= 0 ? selectedIdx : null);
+                missedItems.push(it);
+              }
             }
           }
+        } catch (e) {
+          console.error('Errore correzione item', idx, e);
         }
       });
       const score = `${ok}/${CURRENT_DISPLAYED.length} corrette`;
@@ -4929,17 +4476,21 @@
       const key = statsKey();
       const inheritedNote = lastNoteForKey(key);
       const snapshotHtml = els.list().innerHTML;
-      addStat({
-        id: String(Date.now()) + Math.random().toString(36).slice(2, 7),
-        json: currentJsonName,
-        date: dateStr,
-        time: timeStr,
-        total: CURRENT_DISPLAYED.length,
-        correct: ok,
-        pct,
-        note: inheritedNote,
-        snapshot: snapshotHtml
-      });
+      try {
+        addStat({
+          id: String(Date.now()) + Math.random().toString(36).slice(2, 7),
+          json: currentJsonName,
+          date: dateStr,
+          time: timeStr,
+          total: CURRENT_DISPLAYED.length,
+          correct: ok,
+          pct,
+          note: inheritedNote,
+          snapshot: snapshotHtml
+        });
+      } catch (e) {
+        console.error('Errore salvataggio statistiche:', e);
+      }
       if (currentMode === 'base' && missedItems.length) {
         mergeWrongQuestions(missedItems);
       }
@@ -4948,14 +4499,18 @@
       }
       const rm = document.getElementById('results-modal');
       if (rm) {
-        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-        set('rm-score', score);
-        set('rm-correct', String(ok));
-        set('rm-wrong', String(wrong));
-        set('rm-pct', pct + '%');
-        set('rm-time', timeStr);
-        renderWrongPdfChooser(wrongItemsForPdf);
-        rm.classList.remove('hidden');
+        try {
+          const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+          set('rm-score', score);
+          set('rm-correct', String(ok));
+          set('rm-wrong', String(wrong));
+          set('rm-pct', pct + '%');
+          set('rm-time', timeStr);
+          renderWrongPdfChooser(wrongItemsForPdf);
+          rm.classList.remove('hidden');
+        } catch (e) {
+          console.error('Errore popup risultati:', e);
+        }
       }
       let approfondire = '';
       if (wrongByChapter.size) {
@@ -4973,95 +4528,12 @@
       els.list().querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
       activatePdfButtonsInContainer(els.list());
       els.btnCorrect().disabled = true;
+      try { renderStats(); } catch { }
       window.scrollTo(0, document.body.scrollHeight);
     }
 
     // ======= Data Loading =======
-    async function loadGithubJsonEntry(entry) {
-      if (!entry || !entry.url) {
-        setStatus('Voce JSON non valida nel manifest GitHub.');
-        return;
-      }
-      const url = String(entry.url || '').trim();
-      const label = String(entry.label || basenameOnly(url) || 'JSON').replace(/\.json$/i, '').trim();
-      setDatasetDirButtonVisible(false);
-      if (els.fileBadge()) {
-        els.fileBadge().textContent = label || 'JSON';
-        els.fileBadge().title = url;
-      }
-      if (els.urlBadge()) {
-        els.urlBadge().textContent = 'GitHub';
-        els.urlBadge().title = url;
-      }
-      currentJsonName = String(entry.name || basenameOnly(url) || url).trim();
-      currentJsonSource = { type: 'url', baseUrl: QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE, manifestEntry: entry };
-      updateHeroJsonName(currentJsonName);
-      setStatus(`Caricamento "${label}" da GitHub...`);
-
-      try {
-        const data = await loadFromUrl(url);
-        if (!data) {
-          resetLoadedDatasetState('Caricamento JSON fallito da GitHub.');
-          return;
-        }
-        RAW_ITEMS = data;
-        ALL_ITEMS = validateItems(RAW_ITEMS) || [];
-        if (!ALL_ITEMS.length) {
-          resetLoadedDatasetState('JSON vuoto o non valido.');
-          return;
-        }
-        archiveCurrentJson(RAW_ITEMS, label || 'JSON');
-        await refreshPdfChapterMapForCurrentJson();
-        currentMode = 'base';
-        setStatus(`Dati caricati da GitHub ✓ (${ALL_ITEMS.length} quiz) — ${currentMappingStatusText()} [base: ${QUIZ_GIT_ACTIVE_BASE || QUIZ_GIT_BASE}].`);
-        renderChapters();
-        document.getElementById('filters-panel').classList.remove('hidden');
-        refreshModeUI();
-        renderStats();
-        if (els.num()) els.num().value = Math.min(30, ALL_ITEMS.length);
-      } catch (err) {
-        resetLoadedDatasetState('Errore caricamento JSON GitHub: ' + (err?.message || err));
-      }
-    }
-
-    async function chooseJsonFromGithubManifest() {
-      setStatus('Carico manifest GitHub...');
-      try {
-        const { entries, url } = await fetchManifestEntriesFromGithub();
-        try {
-          const u = new URL(url, window.location.href);
-          const path = String(u.pathname || '');
-          const i = path.lastIndexOf('/');
-          const dir = i >= 0 ? path.slice(0, i + 1) : '/';
-          QUIZ_GIT_ACTIVE_BASE = (u.origin + dir).replace(/\/+$/, '');
-        } catch {
-          QUIZ_GIT_ACTIVE_BASE = QUIZ_GIT_BASE;
-        }
-        if (els.urlBadge()) {
-          els.urlBadge().textContent = 'Manifest GitHub';
-          els.urlBadge().title = url;
-        }
-        openChoiceModal(
-          'Scegli JSON da GitHub',
-          entries.map((entry) => ({
-            label: entry.label || 'JSON',
-            onClick: () => { loadGithubJsonEntry(entry); }
-          }))
-        );
-        setStatus(`Manifest GitHub caricato (${entries.length} JSON).`);
-      } catch (e) {
-        resetLoadedDatasetState('Manifest GitHub non disponibile o vuoto.');
-      }
-    }
-
-    els.fileBtn().addEventListener('click', async () => {
-      if (!ensureAuth()) return;
-      if (QUIZ_GIT_MODE) {
-        await chooseJsonFromGithubManifest();
-        return;
-      }
-      els.fileInput().click();
-    });
+    els.fileBtn().addEventListener('click', () => els.fileInput().click());
 
     els.fileInput().addEventListener('change', async (e) => {
       const files = Array.from((e.target.files || []));
@@ -5076,7 +4548,6 @@
       const maybePath = String(file.path || '').trim();
       const dirUrl = toFileDirUrlFromPath(maybePath);
       currentJsonSource = { type: 'file', filesByName, dirUrl };
-      updateHeroJsonName(currentJsonName);
       try {
         const text = await file.text(); RAW_ITEMS = JSON.parse(text);
         ALL_ITEMS = validateItems(RAW_ITEMS) || [];
@@ -5126,27 +4597,35 @@
     }
 
     els.urlBtn().addEventListener('click', async () => {
-      if (!ensureAuth()) return;
       const url = (els.urlInput().value || '').trim();
       if (!url) { setStatus('Inserisci un URL.'); els.urlBadge().textContent = 'Nessun URL…'; return; }
       setDatasetDirButtonVisible(false);
       els.urlBadge().textContent = url; els.urlBadge().title = url;
       currentJsonName = url;
       currentJsonSource = { type: 'url' };
-      updateHeroJsonName(currentJsonName);
       const data = await loadFromUrl(url);
       if (data) { RAW_ITEMS = data; ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('Dati caricati da URL ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
     });
 
     els.btnParse().addEventListener('click', async () => {
-      if (!ensureAuth()) return;
-      try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; updateHeroJsonName(currentJsonName); archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
+      try { setDatasetDirButtonVisible(false); RAW_ITEMS = JSON.parse(els.paste().value); ALL_ITEMS = validateItems(RAW_ITEMS) || []; if (!ALL_ITEMS.length) { setStatus('JSON vuoto o non valido.'); return; } currentJsonName = 'JSON incollato'; currentJsonSource = { type: 'paste' }; archiveCurrentJson(RAW_ITEMS, currentJsonName); await refreshPdfChapterMapForCurrentJson(); currentMode = 'base'; setStatus('JSON incollato ✓ — ' + currentMappingStatusText() + '. Imposta filtri e premi "Procedi".'); renderChapters(); document.getElementById('filters-panel').classList.remove('hidden'); refreshModeUI(); renderStats(); }
       catch (err) { setStatus('Errore parsing JSON incollato: ' + err.message); }
     });
 
     // ======= Procedi genera =======
+    const btnExamMode = els.btnExamMode ? els.btnExamMode() : document.getElementById('btn-exam-mode');
+    if (btnExamMode) {
+      btnExamMode.addEventListener('click', () => toggleExamMode());
+      updateExamModeButtonUI();
+    }
+
+    const btnCorrectGlobal = els.btnCorrect();
+    if (btnCorrectGlobal && !btnCorrectGlobal.dataset.bound) {
+      btnCorrectGlobal.addEventListener('click', () => correctAll(false));
+      btnCorrectGlobal.dataset.bound = '1';
+    }
+
     els.btnGo().addEventListener('click', async () => {
-      if (!ensureAuth()) return;
       if (!ALL_ITEMS.length) { setStatus('Carica prima il JSON (file/URL/incolla).'); return; }
       await generateQuiz();
     });
@@ -5192,20 +4671,6 @@
       });
     }
 
-    const btnAuth = document.getElementById('btn-auth');
-    const btnAuthLogin = document.getElementById('btn-auth-login');
-    const authPassword = document.getElementById('auth-password');
-    if (btnAuth) {
-      btnAuth.addEventListener('click', () => {
-        if (currentUser) logoutAuth();
-        else openAuthModal();
-      });
-    }
-    if (btnAuthLogin) btnAuthLogin.addEventListener('click', async () => { await doLogin(); });
-    if (authPassword) authPassword.addEventListener('keydown', async (e) => {
-      if ((e.key || '') === 'Enter') await doLogin();
-    });
-
     const btnHelp = document.getElementById('btn-help');
     if (btnHelp) btnHelp.addEventListener('click', () => openHelpModal());
     const helpModal = document.getElementById('help-modal');
@@ -5224,6 +4689,11 @@
       aiModal.addEventListener('click', (e) => {
         if (e.target === aiModal) closeAiModal();
       });
+    }
+
+    const examCheckOk = document.getElementById('exam-check-ok');
+    if (examCheckOk) {
+      examCheckOk.addEventListener('click', () => closeExamCheckModal());
     }
 
     const easterModal = document.getElementById('easter-modal');
@@ -5528,19 +4998,7 @@
         }
       ]);
     });
-    setBackgroundLogoWithFallback();
-    restoreAuthFromSession();
-    updateHeroJsonName(currentJsonName);
     currentMode = 'base';
-    if (QUIZ_GIT_MODE) {
-      const fileBtn = els.fileBtn();
-      if (fileBtn) fileBtn.innerHTML = '<i>☁️</i> Scegli da GitHub';
-      const fileInput = els.fileInput();
-      if (fileInput) fileInput.disabled = true;
-      const datasetBtn = els.datasetDirBtn();
-      if (datasetBtn) datasetBtn.classList.add('hidden');
-      setStatus('AlgoTeam pronto: esegui login e carica un dataset (GitHub, URL o Incolla JSON).');
-    }
     setPercentEnabled(false);
     updateTopDateTime();
     setInterval(updateTopDateTime, 1000);

@@ -152,7 +152,11 @@
       "url": "psicologia_generale_pdf_map.json",
       "type": "json"
     },
-    {
+   {
+      "name": "Strategia organizzazione emarketing.json",
+      "url": "Strategia organizzazione emarketing.json",
+      "type": "json"
+    }, {
       "name": "Stampa_errori_quiz.pdf",
       "url": "Stampa_errori_quiz.pdf",
       "type": "pdf"

@@ -35,14 +35,15 @@
       "qmap": "programmazione_distribuita_pdf_map.json",
       "xlsx": "Programmazione distribuita.xlsx"
     },
-   {
+    {
       "name": "Strategia organizzazione emarketing.json",
       "url": "Strategia organizzazione emarketing.json",
       "json": "Strategia organizzazione emarketing.json",
       "pdf": "",
       "qmap": "",
       "xlsx": ""
-    }, {
+    }, 
+    {
       "name": "Psicologia Generale.json",
       "url": "Psicologia Generale.json",
       "json": "Psicologia Generale.json",
@@ -152,11 +153,12 @@
       "url": "psicologia_generale_pdf_map.json",
       "type": "json"
     },
-   {
+    {
       "name": "Strategia organizzazione emarketing.json",
       "url": "Strategia organizzazione emarketing.json",
       "type": "json"
-    }, {
+    }, 
+    {
       "name": "Stampa_errori_quiz.pdf",
       "url": "Stampa_errori_quiz.pdf",
       "type": "pdf"
